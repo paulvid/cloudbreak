@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.sequenceiq.cloudbreak.reactor.api.event.StackEvent;
 
+import reactor.rx.Promise;
+
 public class StackScaleTriggerEvent extends StackEvent {
 
     private final String instanceGroup;
@@ -19,6 +21,13 @@ public class StackScaleTriggerEvent extends StackEvent {
 
     public StackScaleTriggerEvent(String selector, Long stackId, String instanceGroup, Integer adjustment, Set<String> hostNames) {
         super(selector, stackId);
+        this.instanceGroup = instanceGroup;
+        this.adjustment = adjustment;
+        this.hostNames = hostNames;
+    }
+
+    public StackScaleTriggerEvent(String selector, Long stackId, String instanceGroup, Integer adjustment, Set<String> hostNames, Promise<Boolean> accepted) {
+        super(selector, stackId, accepted);
         this.instanceGroup = instanceGroup;
         this.adjustment = adjustment;
         this.hostNames = hostNames;
