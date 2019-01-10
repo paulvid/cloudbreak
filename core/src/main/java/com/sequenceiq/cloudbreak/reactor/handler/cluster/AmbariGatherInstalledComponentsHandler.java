@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.sequenceiq.cloudbreak.core.cluster.AmbariClusterUpscaleService;
+import com.sequenceiq.cloudbreak.core.cluster.ClusterUpscaleService;
 import com.sequenceiq.cloudbreak.reactor.api.event.EventSelectorUtil;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariGatherInstalledComponentsRequest;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariGatherInstalledComponentsResult;
@@ -26,7 +26,7 @@ public class AmbariGatherInstalledComponentsHandler implements ReactorEventHandl
     private EventBus eventBus;
 
     @Inject
-    private AmbariClusterUpscaleService clusterUpscaleService;
+    private ClusterUpscaleService clusterUpscaleService;
 
     @Override
     public String selector() {

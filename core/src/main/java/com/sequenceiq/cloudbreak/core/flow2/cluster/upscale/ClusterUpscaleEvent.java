@@ -15,8 +15,6 @@ import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariStopComponentsR
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariStopServerAndAgentResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.UpscaleClusterResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.orchestration.UpscaleClusterManagerResult;
-import com.sequenceiq.cloudbreak.reactor.api.event.recipe.UpscalePostRecipesResult;
-import com.sequenceiq.cloudbreak.reactor.api.event.orchestration.UpscaleAmbariResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.recipe.UploadUpscaleRecipesResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.recipe.UpscalePostRecipesResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.resource.UpscaleCheckHostMetadataResult;

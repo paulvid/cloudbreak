@@ -358,7 +358,7 @@ public class AmbariClusterModificationService implements ClusterModificationServ
         String message = pollingResult.getRight() == null
                 ? cloudbreakMessagesService.getMessage(failureMessage.code())
                 : pollingResult.getRight().getMessage();
-        ambariClusterConnectorPollingResultChecker.checkPollingResult(pollingResult.getLeft(), message);
+        clusterConnectorPollingResultChecker.checkPollingResult(pollingResult.getLeft(), message);
     }
 
     private void tryWithRetry(Stack stack, Map<String, String> components, String hostname, Runnable action) throws CloudbreakException {
