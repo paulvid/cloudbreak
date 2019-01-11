@@ -224,11 +224,15 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariStartServerAndAgentResult payload, Map<Object, Object> variables) {
+                AmbariRegenerateKerberosKeytabsRequest request =
+                        new AmbariRegenerateKerberosKeytabsRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName());
                 if(getKerberosSecured(variables)){
                     clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_REGENERATE_KERBEROS_KEYTABS_STATE");
-                    AmbariRegenerateKerberosKeytabsRequest request =
-                            new AmbariRegenerateKerberosKeytabsRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName());
                     sendEvent(context.getFlowId(), request.selector(), request);
+                } else{
+                    AmbariRegenerateKerberosKeytabsResult result = new AmbariRegenerateKerberosKeytabsResult(request);
+                    sendEvent(context.getFlowId(), result.selector(), result);
+
                 }
             }
         };
