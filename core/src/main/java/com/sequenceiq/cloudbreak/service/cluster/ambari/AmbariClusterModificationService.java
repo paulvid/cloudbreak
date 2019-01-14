@@ -3,6 +3,7 @@ package com.sequenceiq.cloudbreak.service.cluster.ambari;
 import static com.sequenceiq.cloudbreak.api.model.Status.UPDATE_IN_PROGRESS;
 import static com.sequenceiq.cloudbreak.service.PollingResult.isExited;
 import static com.sequenceiq.cloudbreak.service.PollingResult.isTimeout;
+import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.*;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.AMBARI_CLUSTER_SERVICES_INIT_FAILED;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.AMBARI_CLUSTER_SERVICES_STARTING;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.AMBARI_CLUSTER_SERVICES_START_FAILED;
@@ -10,6 +11,7 @@ import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.AM
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.AMBARI_CLUSTER_SERVICES_STOPPING;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.AMBARI_CLUSTER_SERVICES_STOP_FAILED;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariMessages.AMBARI_CLUSTER_UPSCALE_FAILED;
+import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariOperationType.*;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariOperationType.INIT_SERVICES_AMBARI_PROGRESS_STATE;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariOperationType.START_SERVICES_AMBARI_PROGRESS_STATE;
 import static com.sequenceiq.cloudbreak.service.cluster.ambari.AmbariOperationType.STOP_AMBARI_PROGRESS_STATE;
@@ -205,7 +207,7 @@ public class AmbariClusterModificationService implements ClusterModificationServ
 
     @Override
     public void stopComponents(Stack stack, Map<String, String> components, String hostname) throws CloudbreakException {
-        stopComponentsInternal(stack, components, hostname, false);
+        stopComponentsInternal(stack, new ArrayList<>(components.keySet()), hostname, OperationParameters.DoNotWait);
     }
 
     @Override
@@ -218,7 +220,8 @@ public class AmbariClusterModificationService implements ClusterModificationServ
         if (!componentsNotInDesiredState.isEmpty()) {
             LOGGER.info("Some components are not in {} state: {}, stopping them",
                     STATE_INSTALLED, componentsNotInDesiredStateToString(componentsNotInDesiredState));
-            stopComponentsInternal(stack, componentsNotInDesiredState, hostname, true);
+            stopComponentsInternal(stack, new ArrayList<>(componentsNotInDesiredState.keySet()), hostname,
+                    new OperationParameters(STOP_AMBARI_PROGRESS_STATE, AMBARI_CLUSTER_SERVICES_STOP_FAILED));
         }
     }
 
@@ -246,7 +249,8 @@ public class AmbariClusterModificationService implements ClusterModificationServ
      */
     @Override
     public void installComponents(Stack stack, Map<String, String> components, String hostname) throws CloudbreakException {
-        stopComponentsInternal(stack, components, hostname, true);
+        stopComponentsInternal(stack, collectMasterSlaveComponenets(components), hostname,
+                new OperationParameters(INSTALL_SERVICES_AMBARI_PROGRESS_STATE, AMBARI_CLUSTER_INSTALL_FAILED));
     }
 
     @Override
@@ -266,14 +270,13 @@ public class AmbariClusterModificationService implements ClusterModificationServ
 
     @Override
     public void startComponents(Stack stack, Map<String, String> components, String hostname) throws CloudbreakException {
-        tryWithRetry(stack, components, hostname, () -> {
+        tryWithRetry(() -> {
             try {
                 AmbariClient ambariClient = clientFactory.getAmbariClient(stack, stack.getCluster());
-//                Integer operationId = ambariClient.restartAllServices(stack.getCluster().getName());
-//                Map<String, Integer> operationRequests = Map.of("restartAllServices", operationId);
-                Map<String, Integer> operationRequests = ambariClient.startComponentsOnHost(hostname, collectMasterSlaveComponenets(components));
+                Integer operationId = ambariClient.restartAllServices(stack.getCluster().getName());
+                Map<String, Integer> operationRequests = Map.of("restartAllServices", operationId);
                 waitForOperation(stack, ambariClient, operationRequests, hostname, START_SERVICES_AMBARI_PROGRESS_STATE, AMBARI_CLUSTER_SERVICES_START_FAILED);
-            } catch (RuntimeException | HttpResponseException e) {
+            } catch (RuntimeException e) {
                 LOGGER.error("Error starting components on ambari", e);
                 throw new RecoverableAmbariException(e);
             } catch (ClusterException e) {
@@ -327,12 +330,13 @@ public class AmbariClusterModificationService implements ClusterModificationServ
                 .collect(Collectors.toList());
     }
 
-    private void stopComponentsInternal(Stack stack, Map<String, String> components, String hostname, boolean waitForOperation) throws CloudbreakException {
-        tryWithRetry(stack, components, hostname, () -> {
+    private void stopComponentsInternal(Stack stack, List<String> components, String hostname, OperationParameters operationParameters) throws CloudbreakException {
+        tryWithRetry(() -> {
             try {
                 AmbariClient ambariClient = clientFactory.getAmbariClient(stack, stack.getCluster());
-                Map<String, Integer> operationRequests = ambariClient.stopComponentsOnHost(hostname, new ArrayList<>(components.keySet()));
-                if (waitForOperation) {
+                Map<String, Integer> operationRequests = ambariClient.stopComponentsOnHost(hostname, components);
+                if (operationParameters.waitForOperation) {
+                    waitForOperation(stack, ambariClient, operationRequests, hostname, operationParameters.getAmbariOperationType(), operationParameters.getOperationFailedMessage());
                     waitForOperation(stack, ambariClient, operationRequests, hostname, STOP_SERVICES_AMBARI_PROGRESS_STATE, AMBARI_CLUSTER_SERVICES_STOP_FAILED);
                 }
             } catch (RuntimeException | HttpResponseException e) {
@@ -363,7 +367,7 @@ public class AmbariClusterModificationService implements ClusterModificationServ
         clusterConnectorPollingResultChecker.checkPollingResult(pollingResult.getLeft(), message);
     }
 
-    private void tryWithRetry(Stack stack, Map<String, String> components, String hostname, Runnable action) throws CloudbreakException {
+    private void tryWithRetry(Runnable action) throws CloudbreakException {
         Queue<CloudbreakException> errors = new ArrayDeque<>();
         RetryUtil.withDefaultRetries()
                 .retry(action::run)
@@ -416,6 +420,39 @@ public class AmbariClusterModificationService implements ClusterModificationServ
     private static class IrrecoverableAmbariException extends RuntimeException {
         IrrecoverableAmbariException(Exception cause) {
             super(cause);
+        }
+    }
+
+    private static class OperationParameters {
+
+        private static OperationParameters DoNotWait = new OperationParameters();
+
+        private boolean waitForOperation;
+
+        private AmbariOperationType ambariOperationType;
+
+        private AmbariMessages operationFailedMessage;
+
+        private OperationParameters(AmbariOperationType ambariOperationType, AmbariMessages operationFailedMessage) {
+            this.waitForOperation = true;
+            this.ambariOperationType = ambariOperationType;
+            this.operationFailedMessage = operationFailedMessage;
+        }
+
+        private OperationParameters(){
+            this.waitForOperation = false;
+        }
+
+        public boolean isWaitForOperation() {
+            return waitForOperation;
+        }
+
+        public AmbariOperationType getAmbariOperationType() {
+            return ambariOperationType;
+        }
+
+        public AmbariMessages getOperationFailedMessage() {
+            return operationFailedMessage;
         }
     }
 }
