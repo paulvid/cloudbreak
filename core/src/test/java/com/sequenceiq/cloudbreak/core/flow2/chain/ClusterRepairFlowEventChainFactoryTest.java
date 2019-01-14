@@ -40,6 +40,8 @@ public class ClusterRepairFlowEventChainFactoryTest {
 
     private static final String FAILED_NODE_FQDN_PRIMARY_GATEWAY = "failedNode-FQDN-primary-gateway";
 
+    private static final String FAILED_NODE_FQDN_SECONDARY_GATEWAY = "failedNode-FQDN-secondary-gateway";
+
     private static final String FAILED_NODE_FQDN_CORE = "failedNode-FQDN-core";
 
     private static final long STACK_ID = 1L;
@@ -73,7 +75,7 @@ public class ClusterRepairFlowEventChainFactoryTest {
         Stack stack = getStack();
         when(clusterService.isMultipleGateway(stack)).thenReturn(false);
         when(stackService.findClustersConnectedToDatalake(STACK_ID)).thenReturn(Set.of());
-        setupHostGroup();
+        setupHostGroup(true);
 
         Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedPrimaryGateway().build());
 
@@ -86,7 +88,7 @@ public class ClusterRepairFlowEventChainFactoryTest {
         Stack stack = getStack();
         when(clusterService.isMultipleGateway(stack)).thenReturn(false);
         when(stackService.findClustersConnectedToDatalake(STACK_ID)).thenReturn(Set.of(ATTACHED_WORKLOAD));
-        setupHostGroup();
+        setupHostGroup(true);
 
         Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedPrimaryGateway().build());
 
@@ -99,12 +101,13 @@ public class ClusterRepairFlowEventChainFactoryTest {
         Stack stack = getStack();
         when(clusterService.isMultipleGateway(stack)).thenReturn(false);
         when(stackService.findClustersConnectedToDatalake(STACK_ID)).thenReturn(Set.of());
-        setupHostGroup();
+        setupHostGroup(true);
 
-        Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedPrimaryGateway().build());
+        Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(
+                new TriggerEventBuilder(stack).withFailedPrimaryGateway().withFailedCore().build());
 
         List<String> triggeredOperations = eventQueues.stream().map(Selectable::selector).collect(Collectors.toList());
-        assertEquals(List.of("STACK_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT"), triggeredOperations);
+        assertEquals(List.of("STACK_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT", "FULL_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT"), triggeredOperations);
     }
 
     @Test
@@ -112,7 +115,7 @@ public class ClusterRepairFlowEventChainFactoryTest {
         Stack stack = getStack();
         when(clusterService.isMultipleGateway(stack)).thenReturn(true);
         when(stackService.findClustersConnectedToDatalake(STACK_ID)).thenReturn(Set.of());
-        setupHostGroup();
+        setupHostGroup(true);
 
         Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedPrimaryGateway().build());
 
@@ -128,7 +131,7 @@ public class ClusterRepairFlowEventChainFactoryTest {
         Stack stack = getStack();
         when(clusterService.isMultipleGateway(stack)).thenReturn(true);
         when(stackService.findClustersConnectedToDatalake(STACK_ID)).thenReturn(Set.of(ATTACHED_WORKLOAD));
-        setupHostGroup();
+        setupHostGroup(true);
 
         Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedPrimaryGateway().build());
 
@@ -141,26 +144,38 @@ public class ClusterRepairFlowEventChainFactoryTest {
     }
 
     @Test
-    public void testRepairSingleNodeClusterWithNoAttached() {
+    public void testRepairCoreNodes() {
+        Stack stack = getStack();
+        when(clusterService.isMultipleGateway(stack)).thenReturn(false);
+        when(stackService.findClustersConnectedToDatalake(STACK_ID)).thenReturn(Set.of(ATTACHED_WORKLOAD));
+        setupHostGroup(true);
+
+        Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedCore().build());
+
+        List<String> triggeredOperations = eventQueues.stream().map(Selectable::selector).collect(Collectors.toList());
+        assertEquals(List.of("FULL_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT"), triggeredOperations);
+    }
+
+    @Test
+    public void testRepairNotGatewayInstanceGroup() {
         Stack stack = getStack();
         when(clusterService.isMultipleGateway(stack)).thenReturn(false);
         when(stackService.findClustersConnectedToDatalake(STACK_ID)).thenReturn(Set.of());
-        setupHostGroup();
+        setupHostGroup(false);
 
-        Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedPrimaryGateway().build());
+        Queue<Selectable> eventQueues = underTest.createFlowTriggerEventQueue(new TriggerEventBuilder(stack).withFailedCore().build());
 
         List<String> triggeredOperations = eventQueues.stream().map(Selectable::selector).collect(Collectors.toList());
-        assertEquals(List.of("STACK_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT"), triggeredOperations);
+        assertEquals(List.of("FULL_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT"), triggeredOperations);
     }
 
-
-    private void setupHostGroup() {
-        HostGroup masterHostGroup = setupHostGroup(setupInstanceGroup());
-        when(hostGroupService.getByClusterIdAndName(anyLong(), anyString())).thenReturn(masterHostGroup);
-        setupInstanceMetadataRepository();
+    private void setupHostGroup(boolean gatewayInstanceGroup) {
+        HostGroup hostGroup = setupHostGroup(setupInstanceGroup(gatewayInstanceGroup ? InstanceGroupType.GATEWAY : InstanceGroupType.CORE));
+        when(hostGroupService.getByClusterIdAndName(anyLong(), anyString())).thenReturn(hostGroup);
+        setupPrimaryGateway();
     }
 
-    private void setupInstanceMetadataRepository() {
+    private void setupPrimaryGateway() {
         List<InstanceMetaData> primaryGatewayIm = getPrimaryGatewayByInstanceGroup();
         when(instanceMetadataRepository.getPrimaryGatewayByInstanceGroup(anyLong(), anyLong())).thenReturn(primaryGatewayIm);
     }
@@ -182,18 +197,18 @@ public class ClusterRepairFlowEventChainFactoryTest {
     }
 
     private HostGroup setupHostGroup(InstanceGroup instanceGroup) {
-        HostGroup masterHostGroup = mock(HostGroup.class);
-        when(masterHostGroup.getName()).thenReturn("masterHostGroupName");
+        HostGroup hostGroup = mock(HostGroup.class);
+        when(hostGroup.getName()).thenReturn("hostGroupName");
         Constraint constraint = mock(Constraint.class);
         when(constraint.getInstanceGroup()).thenReturn(instanceGroup);
-        when(masterHostGroup.getConstraint()).thenReturn(constraint);
-        return masterHostGroup;
+        when(hostGroup.getConstraint()).thenReturn(constraint);
+        return hostGroup;
     }
 
-    private InstanceGroup setupInstanceGroup() {
+    private InstanceGroup setupInstanceGroup(InstanceGroupType instanceGroupType) {
         InstanceGroup instanceGroup = mock(InstanceGroup.class);
         when(instanceGroup.getId()).thenReturn(INSTANCE_GROUP_ID);
-        when(instanceGroup.getInstanceGroupType()).thenReturn(InstanceGroupType.GATEWAY);
+        when(instanceGroup.getInstanceGroupType()).thenReturn(instanceGroupType);
         return instanceGroup;
     }
 
@@ -212,6 +227,11 @@ public class ClusterRepairFlowEventChainFactoryTest {
             return this;
         }
 
+        private TriggerEventBuilder withFailedSecondaryGateway(){
+            failedHostnames.add(FAILED_NODE_FQDN_PRIMARY_GATEWAY);
+            return this;
+        }
+
         private TriggerEventBuilder withFailedCore(){
             failedHostnames.add(FAILED_NODE_FQDN_CORE);
             return this;
@@ -222,5 +242,4 @@ public class ClusterRepairFlowEventChainFactoryTest {
             return new ClusterRepairTriggerEvent(stack, failedNodes, false);
         }
     }
-
 }

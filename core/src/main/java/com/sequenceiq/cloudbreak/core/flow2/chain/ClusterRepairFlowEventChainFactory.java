@@ -80,14 +80,14 @@ public class ClusterRepairFlowEventChainFactory implements FlowEventChainFactory
             boolean primaryGatewayInstance = !primaryGatewayHostNames.isEmpty();
             boolean singlePrimaryGateway = primaryGatewayInstance && !multipleGatewayStack;
 
-            List<String> notSinglePrimaryGateways = new ArrayList<>(hostNames);
+            List<String> failedHostnames = new ArrayList<>(hostNames);
             if (singlePrimaryGateway) {
                 handleSinglePrimaryGateway(event, hostGroup, primaryGatewayHostNames, stack, flowChainTriggers);
-                notSinglePrimaryGateways.removeAll(primaryGatewayHostNames);
-            }
-            if (!notSinglePrimaryGateways.isEmpty()) {
+                failedHostnames.removeAll(primaryGatewayHostNames);
+                handleNotSinglePrimaryGateways(false, gatewayInstanceGroup, event, hostGroup, failedHostnames, stack, flowChainTriggers);
+            } else {
                 handleNotSinglePrimaryGateways(
-                        primaryGatewayInstance, gatewayInstanceGroup, event, hostGroup, notSinglePrimaryGateways, stack, flowChainTriggers);
+                        primaryGatewayInstance, gatewayInstanceGroup, event, hostGroup, failedHostnames, stack, flowChainTriggers);
             }
         }
         return flowChainTriggers;
@@ -107,16 +107,19 @@ public class ClusterRepairFlowEventChainFactory implements FlowEventChainFactory
     }
 
     private void handleNotSinglePrimaryGateways(boolean primaryGatewayInstance, boolean gatewayInstanceGroup, ClusterRepairTriggerEvent event,
-            HostGroup hostGroup, List<String> hostNames, Stack stack, Queue<Selectable> flowChainTriggers) {
+            HostGroup hostGroup, List<String> failedHostNames, Stack stack, Queue<Selectable> flowChainTriggers) {
+        if(failedHostNames.isEmpty()){
+            return;
+        }
         // TODO: handle the case when the gateway and the gateway candidates are all selected for repair
         if (gatewayInstanceGroup && primaryGatewayInstance) {
             addChangePrimaryGateway(event, flowChainTriggers);
         }
-        addFullDownscale(event, stack, flowChainTriggers, hostGroup.getName(), hostNames);
+        addFullDownscale(event, stack, flowChainTriggers, hostGroup.getName(), failedHostNames);
         if (!event.isRemoveOnly()) {
-            addFullUpscale(event, flowChainTriggers, hostGroup.getName(), hostNames, false, false);
+            addFullUpscale(event, flowChainTriggers, hostGroup.getName(), failedHostNames, false, false);
             // we need to update all ephemeral clusters that are connected to a datalake
-            if (gatewayInstanceGroup && !stackService.findClustersConnectedToDatalake(event.getStackId()).isEmpty()) {
+            if (gatewayInstanceGroup && !stackService.findClustersConnectedToDatalake(event.getStackId()).isEmpty() && primaryGatewayInstance) {
                 upgradeEphemeralClusters(event, flowChainTriggers);
             }
         }

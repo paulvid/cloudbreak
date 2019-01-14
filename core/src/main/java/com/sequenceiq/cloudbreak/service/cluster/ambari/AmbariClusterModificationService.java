@@ -269,6 +269,8 @@ public class AmbariClusterModificationService implements ClusterModificationServ
         tryWithRetry(stack, components, hostname, () -> {
             try {
                 AmbariClient ambariClient = clientFactory.getAmbariClient(stack, stack.getCluster());
+//                Integer operationId = ambariClient.restartAllServices(stack.getCluster().getName());
+//                Map<String, Integer> operationRequests = Map.of("restartAllServices", operationId);
                 Map<String, Integer> operationRequests = ambariClient.startComponentsOnHost(hostname, collectMasterSlaveComponenets(components));
                 waitForOperation(stack, ambariClient, operationRequests, hostname, START_SERVICES_AMBARI_PROGRESS_STATE, AMBARI_CLUSTER_SERVICES_START_FAILED);
             } catch (RuntimeException | HttpResponseException e) {
