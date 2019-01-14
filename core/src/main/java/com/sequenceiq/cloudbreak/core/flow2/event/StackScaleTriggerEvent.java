@@ -19,6 +19,10 @@ public class StackScaleTriggerEvent extends StackEvent {
         this(selector, stackId, instanceGroup, adjustment, Collections.emptySet());
     }
 
+    public StackScaleTriggerEvent(String selector, Long stackId, String instanceGroup, Integer adjustment, Promise<Boolean> accepted) {
+        this(selector, stackId, instanceGroup, adjustment, Collections.emptySet(), accepted);
+    }
+
     public StackScaleTriggerEvent(String selector, Long stackId, String instanceGroup, Integer adjustment, Set<String> hostNames) {
         super(selector, stackId);
         this.instanceGroup = instanceGroup;

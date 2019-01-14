@@ -129,8 +129,8 @@ public class ClusterRepairFlowEventChainFactory implements FlowEventChainFactory
     private void addStackDownscale(ClusterRepairTriggerEvent event, Queue<Selectable> flowChainTriggers, InstanceGroup instanceGroup, Stack stack,
             Set<String> hostNames) {
         Set<Long> privateIdsForHostNames = stackService.getPrivateIdsForHostNames(stack.getInstanceMetaDataAsList(), hostNames);
-        flowChainTriggers.add(
-                new StackDownscaleTriggerEvent(STACK_DOWNSCALE_EVENT.event(), event.getStackId(), instanceGroup.getGroupName(), privateIdsForHostNames));
+        flowChainTriggers.add(new StackDownscaleTriggerEvent(STACK_DOWNSCALE_EVENT.event(), event.getStackId(), instanceGroup.getGroupName(),
+                privateIdsForHostNames, event.accepted()));
     }
 
     private void addFullDownscale(ClusterRepairTriggerEvent event, Stack stack, Queue<Selectable> flowChainTriggers, String hostGroupName,
@@ -152,8 +152,8 @@ public class ClusterRepairFlowEventChainFactory implements FlowEventChainFactory
 
     private void addFullUpscale(ClusterRepairTriggerEvent event, Queue<Selectable> flowChainTriggers, String hostGroupName, List<String> hostNames,
             boolean singlePrimaryGateway, boolean kerberosSecured) {
-        flowChainTriggers.add(new StackAndClusterUpscaleTriggerEvent(FlowChainTriggers.FULL_UPSCALE_TRIGGER_EVENT, event.getStackId(),
-                hostGroupName, hostNames.size(), ScalingType.UPSCALE_TOGETHER, Sets.newHashSet(hostNames), singlePrimaryGateway, kerberosSecured, event.accepted()));
+        flowChainTriggers.add(new StackAndClusterUpscaleTriggerEvent(FlowChainTriggers.FULL_UPSCALE_TRIGGER_EVENT, event.getStackId(), hostGroupName,
+                hostNames.size(), ScalingType.UPSCALE_TOGETHER, Sets.newHashSet(hostNames), singlePrimaryGateway, kerberosSecured, event.accepted()));
     }
 
     private boolean isKerberosSecured(Stack stack) {
