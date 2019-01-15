@@ -107,7 +107,8 @@ public class ClusterRepairFlowEventChainFactoryTest {
                 new TriggerEventBuilder(stack).withFailedPrimaryGateway().withFailedCore().build());
 
         List<String> triggeredOperations = eventQueues.stream().map(Selectable::selector).collect(Collectors.toList());
-        assertEquals(List.of("STACK_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT", "FULL_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT"), triggeredOperations);
+        assertEquals(List.of("STACK_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT", "FULL_DOWNSCALE_TRIGGER_EVENT", "FULL_UPSCALE_TRIGGER_EVENT"),
+                triggeredOperations);
     }
 
     @Test
@@ -218,26 +219,26 @@ public class ClusterRepairFlowEventChainFactoryTest {
 
         private final List<String> failedHostnames = new ArrayList<>();
 
-        private TriggerEventBuilder(Stack stack){
+        private TriggerEventBuilder(Stack stack) {
             this.stack = stack;
         }
 
-        private TriggerEventBuilder withFailedPrimaryGateway(){
+        private TriggerEventBuilder withFailedPrimaryGateway() {
             failedHostnames.add(FAILED_NODE_FQDN_PRIMARY_GATEWAY);
             return this;
         }
 
-        private TriggerEventBuilder withFailedSecondaryGateway(){
+        private TriggerEventBuilder withFailedSecondaryGateway() {
             failedHostnames.add(FAILED_NODE_FQDN_PRIMARY_GATEWAY);
             return this;
         }
 
-        private TriggerEventBuilder withFailedCore(){
+        private TriggerEventBuilder withFailedCore() {
             failedHostnames.add(FAILED_NODE_FQDN_CORE);
             return this;
         }
 
-        private ClusterRepairTriggerEvent build(){
+        private ClusterRepairTriggerEvent build() {
             Map<String, List<String>> failedNodes = Map.of("hostGroup-master", failedHostnames);
             return new ClusterRepairTriggerEvent(stack, failedNodes, false);
         }

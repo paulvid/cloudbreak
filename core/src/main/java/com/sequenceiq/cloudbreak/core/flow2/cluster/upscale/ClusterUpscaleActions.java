@@ -126,7 +126,8 @@ public class ClusterUpscaleActions {
 
             @Override
             protected Selectable createRequest(ClusterUpscaleContext context) {
-                return new UpscaleClusterManagerRequest(context.getStackId(), context.getHostGroupName(), context.getAdjustment(), context.isSinglePrimaryGateway());
+                return new UpscaleClusterManagerRequest(context.getStackId(), context.getHostGroupName(), context.getAdjustment(),
+                        context.isSinglePrimaryGateway());
             }
 
         };
@@ -226,13 +227,12 @@ public class ClusterUpscaleActions {
             protected void doExecute(ClusterUpscaleContext context, AmbariStartServerAndAgentResult payload, Map<Object, Object> variables) {
                 AmbariRegenerateKerberosKeytabsRequest request =
                         new AmbariRegenerateKerberosKeytabsRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName());
-                if(getKerberosSecured(variables)){
+                if (getKerberosSecured(variables)) {
                     clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_REGENERATE_KERBEROS_KEYTABS_STATE");
                     sendEvent(context.getFlowId(), request.selector(), request);
-                } else{
+                } else {
                     AmbariRegenerateKerberosKeytabsResult result = new AmbariRegenerateKerberosKeytabsResult(request);
                     sendEvent(context.getFlowId(), result.selector(), result);
-
                 }
             }
         };
@@ -317,7 +317,6 @@ public class ClusterUpscaleActions {
             }
         };
     }
-
 
     @Bean(name = "UPSCALING_CLUSTER_STATE")
     public Action<?, ?> installServicesAction() {
@@ -437,7 +436,10 @@ public class ClusterUpscaleActions {
         Map<String, String> getInstalledComponents(Map<Object, Object> variables) {
             return (Map<String, String>) variables.get(INSTALLED_COMPONENTS);
         }
-        Boolean getKerberosSecured(Map<Object, Object> variables) { return (Boolean) variables.get(KERBEROS_SECURED);}
+
+        Boolean getKerberosSecured(Map<Object, Object> variables) {
+            return (Boolean) variables.get(KERBEROS_SECURED);
+        }
 
     }
 }

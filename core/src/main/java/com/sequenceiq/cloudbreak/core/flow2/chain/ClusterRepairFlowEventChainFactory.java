@@ -108,7 +108,7 @@ public class ClusterRepairFlowEventChainFactory implements FlowEventChainFactory
 
     private void handleNotSinglePrimaryGateways(boolean primaryGatewayInstance, boolean gatewayInstanceGroup, ClusterRepairTriggerEvent event,
             HostGroup hostGroup, List<String> failedHostNames, Stack stack, Queue<Selectable> flowChainTriggers) {
-        if(failedHostNames.isEmpty()){
+        if (failedHostNames.isEmpty()) {
             return;
         }
         // TODO: handle the case when the gateway and the gateway candidates are all selected for repair

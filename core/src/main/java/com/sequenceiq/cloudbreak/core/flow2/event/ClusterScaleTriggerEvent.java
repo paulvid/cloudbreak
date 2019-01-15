@@ -19,7 +19,8 @@ public class ClusterScaleTriggerEvent extends StackEvent implements HostGroupPay
 
     private final boolean kerberosSecured;
 
-    public ClusterScaleTriggerEvent(String selector, Long stackId, String hostGroup, Integer adjustment, Set<String> hostNames, boolean singlePrimaryGateway, boolean kerberosSecured) {
+    public ClusterScaleTriggerEvent(String selector, Long stackId, String hostGroup, Integer adjustment, Set<String> hostNames, boolean singlePrimaryGateway,
+            boolean kerberosSecured) {
         super(selector, stackId);
         this.hostGroup = hostGroup;
         this.adjustment = adjustment;

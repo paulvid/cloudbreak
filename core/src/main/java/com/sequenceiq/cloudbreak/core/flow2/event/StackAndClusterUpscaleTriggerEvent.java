@@ -22,8 +22,8 @@ public class StackAndClusterUpscaleTriggerEvent extends StackScaleTriggerEvent {
         this.kerberosSecured = false;
     }
 
-    public StackAndClusterUpscaleTriggerEvent(String selector, Long stackId,
-            String instanceGroup, Integer adjustment, ScalingType scalingType, Set<String> hostNames, boolean singlePrimaryGateway, boolean kerberosSecured, Promise<Boolean> accepted) {
+    public StackAndClusterUpscaleTriggerEvent(String selector, Long stackId, String instanceGroup, Integer adjustment, ScalingType scalingType,
+            Set<String> hostNames, boolean singlePrimaryGateway, boolean kerberosSecured, Promise<Boolean> accepted) {
         super(selector, stackId, instanceGroup, adjustment, hostNames, accepted);
         this.scalingType = scalingType;
         this.singleMasterGateway = singlePrimaryGateway;
