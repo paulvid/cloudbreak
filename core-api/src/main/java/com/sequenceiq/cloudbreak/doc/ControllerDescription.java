@@ -9,9 +9,7 @@ public class ControllerDescription {
     public static final String UTIL_V4_DESCRIPTION = "Miscellaneous utility operations";
     public static final String WORKSPACE_UTIL_V4_DESCRIPTION = "Miscellaneous workspace aware utility operations";
     public static final String MANAGEMENT_PACK_DESCRIPTION = "Operations on management packs";
-
     public static final String AUTOSCALE_DESCRIPTION = "Operations by Autoscale";
-
     public static final String CREDENTIAL_V4_DESCRIPTION = "Operations on credentials by workspace";
     public static final String MANAGEMENT_PACK_V3_DESCRIPTION = "Operations on Management pack by Workspace";
     public static final String PROXY_CONFIG_V3_DESCRIPTION = "Operations on proxy config by workspace";
