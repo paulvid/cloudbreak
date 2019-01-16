@@ -24,7 +24,6 @@ import com.sequenceiq.cloudbreak.core.flow2.stack.StackFailureContext;
 import com.sequenceiq.cloudbreak.domain.view.StackView;
 import com.sequenceiq.cloudbreak.logger.MDCBuilder;
 import com.sequenceiq.cloudbreak.reactor.api.event.StackFailureEvent;
-import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariClusterUpscaleStartResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariEnsureComponentsAreStoppedRequest;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariEnsureComponentsAreStoppedResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariGatherInstalledComponentsRequest;
@@ -144,8 +143,8 @@ public class ClusterUpscaleActions {
                     AmbariRepairSingleMasterStartResult result = new AmbariRepairSingleMasterStartResult(context.getStackId(), context.getHostGroupName());
                     sendEvent(context.getFlowId(), result.selector(), result);
                 } else {
-                    AmbariClusterUpscaleStartResult result = new AmbariClusterUpscaleStartResult(context.getStackId(), context.getHostGroupName());
-                    sendEvent(context.getFlowId(), result.selector(), result);
+                    UpscaleClusterRequest request = new UpscaleClusterRequest(context.getStackId(), context.getHostGroupName());
+                    sendEvent(context.getFlowId(), request.selector(), request);
                 }
             }
         };
@@ -314,22 +313,6 @@ public class ClusterUpscaleActions {
             protected Selectable createRequest(ClusterUpscaleContext context) {
                 UpscaleClusterRequest request = new UpscaleClusterRequest(context.getStackId(), context.getHostGroupName());
                 return new UpscaleClusterResult(request);
-            }
-        };
-    }
-
-    @Bean(name = "UPSCALING_CLUSTER_STATE")
-    public Action<?, ?> installServicesAction() {
-        return new AbstractClusterUpscaleAction<UpscaleClusterManagerResult>(UpscaleClusterManagerResult.class) {
-
-            @Override
-            protected void doExecute(ClusterUpscaleContext context, UpscaleClusterManagerResult payload, Map<Object, Object> variables) {
-                sendEvent(context);
-            }
-
-            @Override
-            protected Selectable createRequest(ClusterUpscaleContext context) {
-                return new UpscaleClusterRequest(context.getStackId(), context.getHostGroupName());
             }
         };
     }

@@ -2,7 +2,6 @@ package com.sequenceiq.cloudbreak.core.flow2.cluster.upscale;
 
 import com.sequenceiq.cloudbreak.core.flow2.FlowEvent;
 import com.sequenceiq.cloudbreak.reactor.api.event.EventSelectorUtil;
-import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariClusterUpscaleStartResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariEnsureComponentsAreStoppedResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariGatherInstalledComponentsResult;
 import com.sequenceiq.cloudbreak.reactor.api.event.cluster.AmbariInitComponentsResult;
@@ -23,7 +22,6 @@ public enum ClusterUpscaleEvent implements FlowEvent {
     CLUSTER_UPSCALE_TRIGGER_EVENT("CLUSTER_UPSCALE_TRIGGER_EVENT"),
     UPSCALE_AMBARI_FINISHED_EVENT(EventSelectorUtil.selector(UpscaleClusterManagerResult.class)),
     UPSCALE_AMBARI_FAILED_EVENT(EventSelectorUtil.failureSelector(UpscaleClusterManagerResult.class)),
-    CLUSTER_UPSCALE_START_EVENT(EventSelectorUtil.selector(AmbariClusterUpscaleStartResult.class)),
     CLUSTER_REPAIR_SINGLE_MASTER_START_EVENT(EventSelectorUtil.selector(AmbariRepairSingleMasterStartResult.class)),
     UPLOAD_UPSCALE_RECIPES_FINISHED_EVENT(EventSelectorUtil.selector(UploadUpscaleRecipesResult.class)),
     UPLOAD_UPSCALE_RECIPES_FAILED_EVENT(EventSelectorUtil.failureSelector(UploadUpscaleRecipesResult.class)),

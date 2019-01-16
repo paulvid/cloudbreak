@@ -22,7 +22,6 @@ import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscal
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleEvent.CLUSTER_REPAIR_SINGLE_MASTER_START_EVENT;
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleEvent.CLUSTER_UPSCALE_FAILED_EVENT;
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleEvent.CLUSTER_UPSCALE_FINISHED_EVENT;
-import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleEvent.CLUSTER_UPSCALE_START_EVENT;
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleEvent.CLUSTER_UPSCALE_TRIGGER_EVENT;
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleEvent.EXECUTE_POSTRECIPES_FAILED_EVENT;
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleEvent.EXECUTE_POSTRECIPES_FINISHED_EVENT;
@@ -53,7 +52,6 @@ import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscal
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleState.UPLOAD_UPSCALE_RECIPES_STATE;
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleState.UPSCALING_AMBARI_FINISHED_STATE;
 import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleState.UPSCALING_CLUSTER_MANAGER_STATE;
-import static com.sequenceiq.cloudbreak.core.flow2.cluster.upscale.ClusterUpscaleState.UPSCALING_CLUSTER_STATE;
 
 import java.util.List;
 
@@ -100,9 +98,7 @@ public class ClusterUpscaleFlowConfig extends AbstractFlowConfiguration<ClusterU
                         .noFailureEvent()
 
                     // Pathway 2: not single master node
-                    .from(UPSCALING_AMBARI_FINISHED_STATE).to(UPSCALING_CLUSTER_STATE).event(CLUSTER_UPSCALE_START_EVENT)
-                        .noFailureEvent()
-                    .from(UPSCALING_CLUSTER_STATE).to(EXECUTING_POSTRECIPES_STATE).event(CLUSTER_UPSCALE_FINISHED_EVENT)
+                    .from(UPSCALING_AMBARI_FINISHED_STATE).to(EXECUTING_POSTRECIPES_STATE).event(CLUSTER_UPSCALE_FINISHED_EVENT)
                         .failureEvent(CLUSTER_UPSCALE_FAILED_EVENT)
 
                     .from(EXECUTING_POSTRECIPES_STATE).to(FINALIZE_UPSCALE_STATE).event(EXECUTE_POSTRECIPES_FINISHED_EVENT)
