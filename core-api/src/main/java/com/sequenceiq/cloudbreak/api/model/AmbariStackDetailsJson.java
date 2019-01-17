@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.sequenceiq.cloudbreak.api.model.mpack.ManagementPackDetails;
 import com.sequenceiq.cloudbreak.doc.ModelDescriptions;
-import com.sequenceiq.cloudbreak.doc.ModelDescriptions.AmbariStackDetailsDescription;
+import com.sequenceiq.cloudbreak.doc.ModelDescriptions.StackRepositoryDescription;
 import com.sequenceiq.cloudbreak.validation.ValidAmbariStack;
 
 import io.swagger.annotations.ApiModel;
@@ -21,51 +21,51 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
 public class AmbariStackDetailsJson implements JsonEntity {
-    @ApiModelProperty(AmbariStackDetailsDescription.STACK)
+    @ApiModelProperty(StackRepositoryDescription.STACK)
     private String stack;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.VERSION)
+    @ApiModelProperty(StackRepositoryDescription.VERSION)
     @Pattern(regexp = "(^[0-9]+\\.[0-9]+$)",
             message = "Valid stack version is in MAJOR.MINOR format eg.: 2.6")
     private String version;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.OS)
+    @ApiModelProperty(StackRepositoryDescription.OS)
     private String os;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.OS_TYPE)
+    @ApiModelProperty(StackRepositoryDescription.OS_TYPE)
     private String osType;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.STACK_REPO_ID)
+    @ApiModelProperty(StackRepositoryDescription.STACK_REPO_ID)
     private String stackRepoId;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.STACK_BASE_URL)
+    @ApiModelProperty(StackRepositoryDescription.STACK_BASE_URL)
     private String stackBaseURL;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.UTILS_REPO_ID)
+    @ApiModelProperty(StackRepositoryDescription.UTILS_REPO_ID)
     private String utilsRepoId;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.UTILS_BASE_URL)
+    @ApiModelProperty(StackRepositoryDescription.UTILS_BASE_URL)
     private String utilsBaseURL;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.ENABLE_GPL_REPO)
+    @ApiModelProperty(StackRepositoryDescription.ENABLE_GPL_REPO)
     private boolean enableGplRepo;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.VERIFY)
+    @ApiModelProperty(StackRepositoryDescription.VERIFY)
     private Boolean verify;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.REPOSITORY_VERSION)
+    @ApiModelProperty(StackRepositoryDescription.REPOSITORY_VERSION)
     private String repositoryVersion;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.VDF_URL)
+    @ApiModelProperty(StackRepositoryDescription.VDF_URL)
     private String versionDefinitionFileUrl;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.MPACK_URL)
+    @ApiModelProperty(StackRepositoryDescription.MPACK_URL)
     private String mpackUrl;
 
-    @ApiModelProperty(AmbariStackDetailsDescription.MPACKS)
+    @ApiModelProperty(StackRepositoryDescription.MPACKS)
     private List<ManagementPackDetails> mpacks = new ArrayList<>();
 
-    @ApiModelProperty(ModelDescriptions.AmbariRepoDetailsDescription.AMBARI_REPO_GPG_KEY)
+    @ApiModelProperty(ModelDescriptions.AmbariRepositoryDescription.AMBARI_REPO_GPG_KEY)
     private String gpgKeyUrl;
 
     public String getStack() {

@@ -33,8 +33,8 @@ public class ControllerDescription {
     public static final String IMAGE_CATALOG_V4_DESCRIPTION = "Operations on Image Catalog by workspace";
     public static final String SMARTSENSE_SUBSCRIPTION_V4_DESCRIPTION = "Operations on SmartSense subscriptions by workspace";
     public static final String WORKSPACE_V4_DESCRIPTION = "Operations on workspaces";
+    public static final String STACK_V4_DESCRIPTION = "Operations on stack by workspace";
 
     private ControllerDescription() {
     }
-
 }

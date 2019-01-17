@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 
 import com.sequenceiq.cloudbreak.api.endpoint.autoscale.AutoscaleEndpoint;
 import com.sequenceiq.cloudbreak.api.model.AmbariAddressJson;
-import com.sequenceiq.cloudbreak.api.model.AutoscaleStackResponse;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.response.AutoscaleStackV4Response;
 import com.sequenceiq.cloudbreak.api.model.CertificateResponse;
 import com.sequenceiq.cloudbreak.api.model.FailureReport;
-import com.sequenceiq.cloudbreak.api.model.UpdateClusterJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.UpdateClusterV4Request;
 import com.sequenceiq.cloudbreak.api.model.UpdateStackJson;
 import com.sequenceiq.cloudbreak.api.model.stack.StackResponse;
 import com.sequenceiq.cloudbreak.authorization.PermissionCheckingUtils;
@@ -76,7 +76,7 @@ public class AutoscaleController implements AutoscaleEndpoint {
     }
 
     @Override
-    public Response putCluster(Long stackId, String userId, @Valid UpdateClusterJson updateRequest) {
+    public Response putCluster(Long stackId, String userId, @Valid UpdateClusterV4Request updateRequest) {
         setupIdentityForAutoscale(stackId, userId);
         User user = userService.getOrCreate(restRequestThreadLocalService.getCloudbreakUser());
         Workspace workspace = workspaceService.get(restRequestThreadLocalService.getRequestedWorkspaceId(), user);
@@ -89,7 +89,7 @@ public class AutoscaleController implements AutoscaleEndpoint {
     }
 
     @Override
-    public Set<AutoscaleStackResponse> getAllForAutoscale() {
+    public Set<AutoscaleStackV4Response> getAllForAutoscale() {
         return stackCommonService.getAllForAutoscale();
     }
 

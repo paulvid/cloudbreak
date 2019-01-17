@@ -21,7 +21,7 @@ import com.sequenceiq.cloudbreak.api.model.ExposedService;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.ldaps.requests.LdapV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.database.requests.DatabaseV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.cluster.ClusterRequest;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.HostGroupV4Request;
 import com.sequenceiq.cloudbreak.blueprint.validation.BlueprintValidator;
 import com.sequenceiq.cloudbreak.controller.exception.BadRequestException;
 import com.sequenceiq.cloudbreak.controller.validation.ldapconfig.LdapConfigValidator;
@@ -202,9 +202,9 @@ public class ClusterDecorator {
         }
     }
 
-    private void prepareHostGroups(Stack stack, Cluster cluster, Iterable<HostGroupRequest> hostGroupsJsons, Workspace workspace, User user) {
+    private void prepareHostGroups(Stack stack, Cluster cluster, Iterable<HostGroupV4Request> hostGroupsJsons, Workspace workspace, User user) {
         Set<HostGroup> hostGroups = new HashSet<>();
-        for (HostGroupRequest json : hostGroupsJsons) {
+        for (HostGroupV4Request json : hostGroupsJsons) {
             HostGroup hostGroup = conversionService.convert(json, HostGroup.class);
             hostGroup.setCluster(cluster);
             hostGroup = hostGroupDecorator.decorate(hostGroup, json, stack, true, workspace, user);

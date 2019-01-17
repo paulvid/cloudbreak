@@ -19,14 +19,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.sequenceiq.cloudbreak.api.endpoint.common.StackEndpoint;
-import com.sequenceiq.cloudbreak.api.model.GeneratedBlueprintResponse;
-import com.sequenceiq.cloudbreak.api.model.ReinstallRequestV2;
-import com.sequenceiq.cloudbreak.api.model.stack.StackImageChangeRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.response.GeneratedBlueprintV4Response;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.ReinstallV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.StackImageChangeV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.StackResponse;
 import com.sequenceiq.cloudbreak.api.model.stack.StackScaleRequestV2;
 import com.sequenceiq.cloudbreak.api.model.stack.StackValidationRequest;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.ClusterRepairRequest;
-import com.sequenceiq.cloudbreak.api.model.users.UserNamePasswordJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.ClusterRepairV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.UserNamePasswordV4Request;
 import com.sequenceiq.cloudbreak.api.model.v2.StackV2Request;
 import com.sequenceiq.cloudbreak.doc.ContentType;
 import com.sequenceiq.cloudbreak.doc.ControllerDescription;
@@ -61,7 +61,7 @@ public interface StackV2Endpoint extends StackEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.POST_PUBLIC_BLUEPRINT, produces = ContentType.JSON,
             notes = Notes.STACK_NOTES, nickname = "postPublicStackV2ForBlueprint")
-    GeneratedBlueprintResponse postStackForBlueprint(@Valid StackV2Request stackRequest) throws Exception;
+    GeneratedBlueprintV4Response postStackForBlueprint(@Valid StackV2Request stackRequest) throws Exception;
 
     @GET
     @Path("user")
@@ -160,14 +160,14 @@ public interface StackV2Endpoint extends StackEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.PUT_BY_NAME, produces = ContentType.JSON, notes = Notes.STACK_NOTES,
             nickname = "putreinstallStackV2")
-    Response putReinstall(@PathParam("name") String name, @Valid ReinstallRequestV2 reinstallRequestV2);
+    Response putReinstall(@PathParam("name") String name, @Valid ReinstallV4Request reinstallRequestV2);
 
     @PUT
     @Path("ambari_password/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.PUT_BY_NAME, produces = ContentType.JSON, notes = Notes.STACK_NOTES,
             nickname = "putpasswordStackV2")
-    Response putPassword(@PathParam("name") String name, @Valid UserNamePasswordJson userNamePasswordJson);
+    Response putPassword(@PathParam("name") String name, @Valid UserNamePasswordV4Request userNamePasswordJson);
 
     @GET
     @Path("{id}/status")
@@ -221,11 +221,11 @@ public interface StackV2Endpoint extends StackEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = OperationDescriptions.ClusterOpDescription.REPAIR_CLUSTER, produces = ContentType.JSON, notes = Notes.CLUSTER_REPAIR_NOTES,
             nickname = "repairClusterV2")
-    Response repairCluster(@PathParam("name") String name, ClusterRepairRequest clusterRepairRequest);
+    Response repairCluster(@PathParam("name") String name, ClusterRepairV4Request clusterRepairRequest);
 
     @PUT
     @Path("changeImage/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.PUT_BY_NAME, produces = ContentType.JSON, notes = Notes.STACK_NOTES, nickname = "changeImage")
-    Response changeImage(@PathParam("name") String name, @Valid StackImageChangeRequest stackImageChangeRequest);
+    Response changeImage(@PathParam("name") String name, @Valid StackImageChangeV4Request stackImageChangeRequest);
 }

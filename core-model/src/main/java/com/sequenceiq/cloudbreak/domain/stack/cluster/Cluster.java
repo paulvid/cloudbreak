@@ -37,7 +37,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.sequenceiq.cloudbreak.api.model.ConfigStrategy;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.ConfigStrategy;
 import com.sequenceiq.cloudbreak.api.model.ExecutorType;
 import com.sequenceiq.cloudbreak.api.model.Status;
 import com.sequenceiq.cloudbreak.aspect.secret.SecretValue;

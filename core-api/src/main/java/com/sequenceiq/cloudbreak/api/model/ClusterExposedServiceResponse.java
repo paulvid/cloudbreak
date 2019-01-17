@@ -1,6 +1,6 @@
 package com.sequenceiq.cloudbreak.api.model;
 
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.gateway.SSOType;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.SSOType;
 
 public class ClusterExposedServiceResponse implements JsonEntity {
 

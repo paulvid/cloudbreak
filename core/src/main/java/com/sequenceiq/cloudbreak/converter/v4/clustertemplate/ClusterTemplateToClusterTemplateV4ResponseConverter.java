@@ -10,7 +10,7 @@ import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConvert
 import com.sequenceiq.cloudbreak.domain.stack.Stack;
 import com.sequenceiq.cloudbreak.domain.stack.cluster.ClusterTemplate;
 import com.sequenceiq.cloudbreak.service.stack.StackTemplateService;
-import com.sequenceiq.cloudbreak.util.ConverterUtil;
+import com.sequenceiq.cloudbreak.api.util.ConverterUtil;
 
 @Component
 public class ClusterTemplateToClusterTemplateV4ResponseConverter extends AbstractConversionServiceAwareConverter<ClusterTemplate, ClusterTemplateV4Response> {

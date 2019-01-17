@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupAdjustmentJson;
-import com.sequenceiq.cloudbreak.api.model.StatusRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.StatusRequest;
 import com.sequenceiq.cloudbreak.api.model.UpdateStackJson;
 import com.sequenceiq.cloudbreak.validation.UpdateStackRequestValidator;
 

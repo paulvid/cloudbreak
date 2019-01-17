@@ -7,11 +7,11 @@ import javax.validation.constraints.NotNull;
 
 import com.sequenceiq.cloudbreak.api.endpoint.v4.blueprints.requests.BlueprintV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.credentials.requests.CredentialV4Request;
-import com.sequenceiq.cloudbreak.api.model.FileSystemRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.HostGroupV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.cluster.storage.CloudStorageV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.instancegroup.InstanceGroupV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.network.NetworkV4Request;
 import com.sequenceiq.cloudbreak.api.model.JsonEntity;
-import com.sequenceiq.cloudbreak.api.model.NetworkRequest;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupRequest;
-import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupRequest;
 import com.sequenceiq.cloudbreak.doc.ModelDescriptions;
 import com.sequenceiq.cloudbreak.doc.ModelDescriptions.ClusterModelDescription;
 import com.sequenceiq.cloudbreak.doc.ModelDescriptions.StackModelDescription;
@@ -22,10 +22,10 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel
 public class StackValidationRequest implements JsonEntity {
     @ApiModelProperty(value = ClusterModelDescription.HOSTGROUPS, required = true)
-    private Set<HostGroupRequest> hostGroups = new HashSet<>();
+    private Set<HostGroupV4Request> hostGroups = new HashSet<>();
 
     @ApiModelProperty(value = StackModelDescription.INSTANCE_GROUPS, required = true)
-    private Set<InstanceGroupRequest> instanceGroups = new HashSet<>();
+    private Set<InstanceGroupV4Request> instanceGroups = new HashSet<>();
 
     @ApiModelProperty(ClusterModelDescription.BLUEPRINT_ID)
     private Long blueprintId;
@@ -40,7 +40,7 @@ public class StackValidationRequest implements JsonEntity {
     private Long networkId;
 
     @ApiModelProperty(StackModelDescription.NETWORK)
-    private NetworkRequest network;
+    private NetworkV4Request network;
 
     @NotNull
     @ApiModelProperty(value = ModelDescriptions.CLOUD_PLATFORM, required = true)
@@ -59,21 +59,21 @@ public class StackValidationRequest implements JsonEntity {
     private CredentialV4Request credential;
 
     @ApiModelProperty(StackModelDescription.FILESYSTEM)
-    private FileSystemRequest fileSystem;
+    private CloudStorageV4Request fileSystem;
 
-    public Set<HostGroupRequest> getHostGroups() {
+    public Set<HostGroupV4Request> getHostGroups() {
         return hostGroups;
     }
 
-    public void setHostGroups(Set<HostGroupRequest> hostGroups) {
+    public void setHostGroups(Set<HostGroupV4Request> hostGroups) {
         this.hostGroups = hostGroups;
     }
 
-    public Set<InstanceGroupRequest> getInstanceGroups() {
+    public Set<InstanceGroupV4Request> getInstanceGroups() {
         return instanceGroups;
     }
 
-    public void setInstanceGroups(Set<InstanceGroupRequest> instanceGroups) {
+    public void setInstanceGroups(Set<InstanceGroupV4Request> instanceGroups) {
         this.instanceGroups = instanceGroups;
     }
 
@@ -85,34 +85,6 @@ public class StackValidationRequest implements JsonEntity {
         this.blueprintId = blueprintId;
     }
 
-    public Long getNetworkId() {
-        return networkId;
-    }
-
-    public void setNetworkId(Long netWorkId) {
-        networkId = netWorkId;
-    }
-
-    public FileSystemRequest getFileSystem() {
-        return fileSystem;
-    }
-
-    public void setFileSystem(FileSystemRequest fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
-    public String getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(String platform) {
-        this.platform = platform;
-    }
-
-    public BlueprintV4Request getBlueprint() {
-        return blueprint;
-    }
-
     public String getBlueprintName() {
         return blueprintName;
     }
@@ -121,16 +93,36 @@ public class StackValidationRequest implements JsonEntity {
         this.blueprintName = blueprintName;
     }
 
+    public BlueprintV4Request getBlueprint() {
+        return blueprint;
+    }
+
     public void setBlueprint(BlueprintV4Request blueprint) {
         this.blueprint = blueprint;
     }
 
-    public NetworkRequest getNetwork() {
+    public Long getNetworkId() {
+        return networkId;
+    }
+
+    public void setNetworkId(Long networkId) {
+        this.networkId = networkId;
+    }
+
+    public NetworkV4Request getNetwork() {
         return network;
     }
 
-    public void setNetwork(NetworkRequest network) {
+    public void setNetwork(NetworkV4Request network) {
         this.network = network;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public String getEnvironment() {
@@ -149,6 +141,14 @@ public class StackValidationRequest implements JsonEntity {
         this.credentialId = credentialId;
     }
 
+    public String getCredentialName() {
+        return credentialName;
+    }
+
+    public void setCredentialName(String credentialName) {
+        this.credentialName = credentialName;
+    }
+
     public CredentialV4Request getCredential() {
         return credential;
     }
@@ -157,11 +157,11 @@ public class StackValidationRequest implements JsonEntity {
         this.credential = credential;
     }
 
-    public String getCredentialName() {
-        return credentialName;
+    public CloudStorageV4Request getFileSystem() {
+        return fileSystem;
     }
 
-    public void setCredentialName(String credentialName) {
-        this.credentialName = credentialName;
+    public void setFileSystem(CloudStorageV4Request fileSystem) {
+        this.fileSystem = fileSystem;
     }
 }

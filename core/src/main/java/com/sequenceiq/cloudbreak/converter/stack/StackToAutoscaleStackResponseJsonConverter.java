@@ -4,21 +4,21 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-import com.sequenceiq.cloudbreak.api.model.AutoscaleStackResponse;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.response.AutoscaleStackV4Response;
 import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConverter;
 import com.sequenceiq.cloudbreak.domain.stack.Stack;
 import com.sequenceiq.cloudbreak.domain.stack.cluster.Cluster;
 import com.sequenceiq.cloudbreak.service.GatewayConfigService;
 
 @Component
-public class StackToAutoscaleStackResponseJsonConverter extends AbstractConversionServiceAwareConverter<Stack, AutoscaleStackResponse> {
+public class StackToAutoscaleStackResponseJsonConverter extends AbstractConversionServiceAwareConverter<Stack, AutoscaleStackV4Response> {
 
     @Inject
     private GatewayConfigService gatewayConfigService;
 
     @Override
-    public AutoscaleStackResponse convert(Stack source) {
-        AutoscaleStackResponse result = new AutoscaleStackResponse();
+    public AutoscaleStackV4Response convert(Stack source) {
+        AutoscaleStackV4Response result = new AutoscaleStackV4Response();
         result.setTenant(source.getWorkspace().getTenant().getName());
         result.setWorkspaceId(source.getWorkspace().getId());
         result.setUserId(source.getCreator().getUserId());

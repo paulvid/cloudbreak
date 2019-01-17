@@ -17,7 +17,7 @@ import com.sequenceiq.cloudbreak.controller.validation.ValidationResult.State;
 @RunWith(MockitoJUnitRunner.class)
 public class GatewayTopologyJsonValidatorTest {
 
-    private final GatewayTopologyJsonValidator underTest = new GatewayTopologyJsonValidator(new ExposedServiceListValidator());
+    private final GatewayTopologyV4RequestValidator underTest = new GatewayTopologyV4RequestValidator(new ExposedServiceListValidator());
 
     @Test
     public void testWithNoTopologyName() {

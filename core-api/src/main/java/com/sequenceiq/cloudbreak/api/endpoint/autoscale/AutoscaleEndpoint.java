@@ -14,10 +14,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.sequenceiq.cloudbreak.api.model.AmbariAddressJson;
-import com.sequenceiq.cloudbreak.api.model.AutoscaleStackResponse;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.response.AutoscaleStackV4Response;
 import com.sequenceiq.cloudbreak.api.model.CertificateResponse;
 import com.sequenceiq.cloudbreak.api.model.FailureReport;
-import com.sequenceiq.cloudbreak.api.model.UpdateClusterJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.UpdateClusterV4Request;
 import com.sequenceiq.cloudbreak.api.model.UpdateStackJson;
 import com.sequenceiq.cloudbreak.api.model.stack.StackResponse;
 import com.sequenceiq.cloudbreak.doc.ContentType;
@@ -44,7 +44,7 @@ public interface AutoscaleEndpoint {
     @Path("/stack/{id}/{userId}/cluster")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.PUT_BY_ID, produces = ContentType.JSON, notes = Notes.STACK_NOTES, nickname = "putClusterForAutoscale")
-    Response putCluster(@PathParam("id") Long id, @PathParam("userId") String userId, @Valid UpdateClusterJson updateRequest);
+    Response putCluster(@PathParam("id") Long id, @PathParam("userId") String userId, @Valid UpdateClusterV4Request updateRequest);
 
     @POST
     @Path("ambari")
@@ -57,7 +57,7 @@ public interface AutoscaleEndpoint {
     @Path("stack/all")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.GET_ALL, produces = ContentType.JSON, notes = Notes.STACK_NOTES, nickname = "getAllStackForAutoscale")
-    Set<AutoscaleStackResponse> getAllForAutoscale();
+    Set<AutoscaleStackV4Response> getAllForAutoscale();
 
     @POST
     @Path("/stack/{id}/cluster/failurereport")

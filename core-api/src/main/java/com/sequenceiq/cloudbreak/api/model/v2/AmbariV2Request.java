@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.sequenceiq.cloudbreak.api.model.AmbariDatabaseDetailsJson;
 import com.sequenceiq.cloudbreak.api.model.AmbariRepoDetailsJson;
 import com.sequenceiq.cloudbreak.api.model.AmbariStackDetailsJson;
-import com.sequenceiq.cloudbreak.api.model.ConfigStrategy;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.ConfigStrategy;
 import com.sequenceiq.cloudbreak.api.model.ConnectedClusterRequest;
 import com.sequenceiq.cloudbreak.api.model.JsonEntity;
 import com.sequenceiq.cloudbreak.api.model.stack.cluster.gateway.GatewayJson;

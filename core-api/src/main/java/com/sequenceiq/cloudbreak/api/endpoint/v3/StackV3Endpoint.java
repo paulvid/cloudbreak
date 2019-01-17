@@ -18,16 +18,16 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.sequenceiq.cloudbreak.api.model.GeneratedBlueprintResponse;
-import com.sequenceiq.cloudbreak.api.model.MaintenanceModeJson;
-import com.sequenceiq.cloudbreak.api.model.ReinstallRequestV2;
-import com.sequenceiq.cloudbreak.api.model.UpdateClusterJson;
-import com.sequenceiq.cloudbreak.api.model.stack.StackImageChangeRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.response.GeneratedBlueprintV4Response;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.MaintenanceModeV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.ReinstallV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.UpdateClusterV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.StackImageChangeV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.StackResponse;
 import com.sequenceiq.cloudbreak.api.model.stack.StackScaleRequestV2;
 import com.sequenceiq.cloudbreak.api.model.stack.StackViewResponse;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.ClusterRepairRequest;
-import com.sequenceiq.cloudbreak.api.model.users.UserNamePasswordJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.ClusterRepairV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.UserNamePasswordV4Request;
 import com.sequenceiq.cloudbreak.api.model.v2.StackV2Request;
 import com.sequenceiq.cloudbreak.doc.ContentType;
 import com.sequenceiq.cloudbreak.doc.ControllerDescription;
@@ -124,7 +124,7 @@ public interface StackV3Endpoint {
     @ApiOperation(value = StackOpDescription.REPAIR_CLUSTER_IN_WORKSPACE, produces = ContentType.JSON, notes = Notes.CLUSTER_REPAIR_NOTES,
             nickname = "repairClusterV3")
     Response repairClusterInWorkspace(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name,
-            @Valid ClusterRepairRequest clusterRepairRequest);
+            @Valid ClusterRepairV4Request clusterRepairRequest);
 
     // deleteCluster // v1
     @DELETE
@@ -150,7 +150,7 @@ public interface StackV3Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.POST_STACK_FOR_BLUEPRINT_IN_WORKSPACE, produces = ContentType.JSON,
             notes = Notes.STACK_NOTES, nickname = "postStackForBlueprintV3")
-    GeneratedBlueprintResponse postStackForBlueprint(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name,
+    GeneratedBlueprintV4Response postStackForBlueprint(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name,
             @Valid StackV2Request stackRequest) throws Exception;
 
     // deleteInstanceStackV2
@@ -170,7 +170,7 @@ public interface StackV3Endpoint {
     @ApiOperation(value = StackOpDescription.CHECK_IMAGE_IN_WORKSPACE, produces = ContentType.JSON,
             notes = Notes.STACK_NOTES, nickname = "changeImageV3")
     Response changeImage(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name,
-            @Valid StackImageChangeRequest stackImageChangeRequest);
+            @Valid StackImageChangeV4Request stackImageChangeRequest);
 
     // PutreinstallStackV2
     @PUT
@@ -179,7 +179,7 @@ public interface StackV3Endpoint {
     @ApiOperation(value = StackOpDescription.PUT_BY_NAME, produces = ContentType.JSON, notes = Notes.STACK_NOTES,
             nickname = "putreinstallStackV3")
     Response putReinstall(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name,
-            @Valid ReinstallRequestV2 reinstallRequestV2);
+            @Valid ReinstallV4Request reinstallRequestV2);
 
     // putpasswordStackV2
     @PUT
@@ -187,7 +187,7 @@ public interface StackV3Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = StackOpDescription.PUT_BY_NAME, produces = ContentType.JSON, notes = Notes.STACK_NOTES,
             nickname = "putpasswordStackV3")
-    Response putPassword(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name, @Valid UserNamePasswordJson userNamePasswordJson);
+    Response putPassword(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name, @Valid UserNamePasswordV4Request userNamePasswordJson);
 
     @GET
     @Path("{name}/status")
@@ -201,12 +201,12 @@ public interface StackV3Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = OperationDescriptions.ClusterOpDescription.SET_MAINTENANCE_MODE, produces = ContentType.JSON, notes = Notes.MAINTENANCE_NOTES,
             nickname = "setClusterMaintenanceMode")
-    Response setClusterMaintenanceMode(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name, @NotNull MaintenanceModeJson maintenanceMode);
+    Response setClusterMaintenanceMode(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name, @NotNull MaintenanceModeV4Request maintenanceMode);
 
     @PUT
     @Path("{name}/cluster")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = OperationDescriptions.ClusterOpDescription.PUT_BY_STACK_ID, produces = ContentType.JSON, notes = Notes.CLUSTER_NOTES,
             nickname = "putClusterV3")
-    Response put(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name, @Valid UpdateClusterJson updateJson);
+    Response put(@PathParam("workspaceId") Long workspaceId, @PathParam("name") String name, @Valid UpdateClusterV4Request updateJson);
 }

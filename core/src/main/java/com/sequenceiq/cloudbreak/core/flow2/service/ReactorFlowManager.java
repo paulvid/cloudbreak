@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.sequenceiq.cloudbreak.api.model.Status;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupAdjustmentJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.HostGroupAdjustmentV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupAdjustmentJson;
 import com.sequenceiq.cloudbreak.cloud.Acceptable;
 import com.sequenceiq.cloudbreak.cloud.reactor.ErrorHandlerAwareReactorEventFactory;
@@ -179,14 +179,14 @@ public class ReactorFlowManager {
         notify(selector, event);
     }
 
-    public void triggerClusterUpscale(Long stackId, HostGroupAdjustmentJson hostGroupAdjustment) {
+    public void triggerClusterUpscale(Long stackId, HostGroupAdjustmentV4Request hostGroupAdjustment) {
         String selector = CLUSTER_UPSCALE_TRIGGER_EVENT.event();
         Acceptable event = new ClusterScaleTriggerEvent(selector, stackId,
                 hostGroupAdjustment.getHostGroup(), hostGroupAdjustment.getScalingAdjustment());
         notify(selector, event);
     }
 
-    public void triggerClusterDownscale(Long stackId, HostGroupAdjustmentJson hostGroupAdjustment) {
+    public void triggerClusterDownscale(Long stackId, HostGroupAdjustmentV4Request hostGroupAdjustment) {
         String selector = FlowChainTriggers.FULL_DOWNSCALE_TRIGGER_EVENT;
         ScalingType scalingType = hostGroupAdjustment.getWithStackUpdate() ? ScalingType.DOWNSCALE_TOGETHER : ScalingType.DOWNSCALE_ONLY_CLUSTER;
         Acceptable event = new ClusterAndStackDownscaleTriggerEvent(selector, stackId,

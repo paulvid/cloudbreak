@@ -18,7 +18,7 @@ import com.sequenceiq.cloudbreak.api.model.stack.cluster.gateway.UpdateGatewayTo
 import com.sequenceiq.cloudbreak.controller.exception.BadRequestException;
 import com.sequenceiq.cloudbreak.controller.exception.FlowsAlreadyRunningException;
 import com.sequenceiq.cloudbreak.controller.validation.ValidationResult;
-import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayTopologyJsonValidator;
+import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayTopologyV4RequestValidator;
 import com.sequenceiq.cloudbreak.core.flow2.service.ReactorFlowManager;
 import com.sequenceiq.cloudbreak.domain.json.Json;
 import com.sequenceiq.cloudbreak.domain.stack.Stack;
@@ -49,7 +49,7 @@ public class GatewayService {
     private TransactionService transactionService;
 
     @Inject
-    private GatewayTopologyJsonValidator gatewayTopologyJsonValidator;
+    private GatewayTopologyV4RequestValidator gatewayTopologyJsonValidator;
 
     @Inject
     private ReactorFlowManager reactorFlowManager;

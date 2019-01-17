@@ -10,7 +10,7 @@ import com.sequenceiq.cloudbreak.api.model.stack.cluster.gateway.GatewayTopology
 import com.sequenceiq.cloudbreak.controller.exception.BadRequestException;
 import com.sequenceiq.cloudbreak.controller.validation.ValidationResult;
 import com.sequenceiq.cloudbreak.controller.validation.ValidationResult.State;
-import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayTopologyJsonValidator;
+import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayTopologyV4RequestValidator;
 import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConverter;
 import com.sequenceiq.cloudbreak.domain.json.Json;
 import com.sequenceiq.cloudbreak.domain.stack.cluster.gateway.ExposedServices;
@@ -20,7 +20,7 @@ import com.sequenceiq.cloudbreak.domain.stack.cluster.gateway.GatewayTopology;
 public class GatewayTopologyJsonToGatewayTopologyConverter extends AbstractConversionServiceAwareConverter<GatewayTopologyJson, GatewayTopology> {
 
     @Inject
-    private GatewayTopologyJsonValidator validator;
+    private GatewayTopologyV4RequestValidator validator;
 
     @Override
     public GatewayTopology convert(GatewayTopologyJson source) {

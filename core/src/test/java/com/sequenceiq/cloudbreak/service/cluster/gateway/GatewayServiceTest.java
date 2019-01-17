@@ -37,7 +37,7 @@ import com.sequenceiq.cloudbreak.api.model.stack.cluster.gateway.UpdateGatewayTo
 import com.sequenceiq.cloudbreak.controller.exception.BadRequestException;
 import com.sequenceiq.cloudbreak.controller.exception.FlowsAlreadyRunningException;
 import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.ExposedServiceListValidator;
-import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayTopologyJsonValidator;
+import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayTopologyV4RequestValidator;
 import com.sequenceiq.cloudbreak.converter.stack.cluster.gateway.GatewayTopologyJsonToExposedServicesConverter;
 import com.sequenceiq.cloudbreak.core.flow2.service.ReactorFlowManager;
 import com.sequenceiq.cloudbreak.domain.json.Json;
@@ -72,7 +72,7 @@ public class GatewayServiceTest {
     private final TransactionService transactionService = new TransactionService();
 
     @Spy
-    private final GatewayTopologyJsonValidator gatewayTopologyJsonValidator = new GatewayTopologyJsonValidator(new ExposedServiceListValidator());
+    private final GatewayTopologyV4RequestValidator gatewayTopologyJsonValidator = new GatewayTopologyV4RequestValidator(new ExposedServiceListValidator());
 
     @Mock
     private ReactorFlowManager reactorFlowManager;

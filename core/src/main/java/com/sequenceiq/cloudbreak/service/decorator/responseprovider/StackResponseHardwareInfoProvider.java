@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.response.StackV4Response;
 import com.sequenceiq.cloudbreak.api.model.TemplateResponse;
 import com.sequenceiq.cloudbreak.api.model.stack.StackResponse;
 import com.sequenceiq.cloudbreak.api.model.stack.StackResponseEntries;
@@ -43,7 +44,7 @@ public class StackResponseHardwareInfoProvider implements ResponseProvider {
     private ConversionService conversionService;
 
     @Override
-    public StackResponse providerEntriesToStackResponse(Stack stack, StackResponse stackResponse) {
+    public StackV4Response providerEntriesToStackResponse(Stack stack, StackV4Response stackResponse) {
         Set<HardwareInfoGroupResponse> hardwareInfoResponses = stack.getInstanceGroups().stream()
                 .map(instanceGroup -> hardwareInfoGroupResponse(stack, instanceGroup))
                 .collect(Collectors.toSet());

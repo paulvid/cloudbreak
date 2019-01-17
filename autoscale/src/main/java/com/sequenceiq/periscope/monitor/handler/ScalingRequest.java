@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.sequenceiq.cloudbreak.api.model.AmbariAddressJson;
-import com.sequenceiq.cloudbreak.api.model.UpdateClusterJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.UpdateClusterV4Request;
 import com.sequenceiq.cloudbreak.api.model.UpdateStackJson;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupAdjustmentJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.HostGroupAdjustmentV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupAdjustmentJson;
 import com.sequenceiq.cloudbreak.client.CloudbreakIdentityClient;
 import com.sequenceiq.cloudbreak.common.type.ScalingHardLimitsService;
@@ -125,8 +125,8 @@ public class ScalingRequest implements Runnable {
         try {
             LOGGER.debug("Sending request to remove {} node(s) from host group '{}', triggered policy '{}'", scalingAdjustment, hostGroup, policy.getName());
             Long stackId = cloudbreakClient.autoscaleEndpoint().getStackForAmbari(ambariAddressJson).getId();
-            UpdateClusterJson updateClusterJson = new UpdateClusterJson();
-            HostGroupAdjustmentJson hostGroupAdjustmentJson = new HostGroupAdjustmentJson();
+            UpdateClusterV4Request updateClusterJson = new UpdateClusterV4Request();
+            HostGroupAdjustmentV4Request hostGroupAdjustmentJson = new HostGroupAdjustmentV4Request();
             hostGroupAdjustmentJson.setScalingAdjustment(scalingAdjustment);
             hostGroupAdjustmentJson.setWithStackUpdate(true);
             hostGroupAdjustmentJson.setHostGroup(hostGroup);

@@ -32,7 +32,7 @@ import com.google.common.collect.Sets;
 import com.sequenceiq.ambari.client.AmbariClient;
 import com.sequenceiq.cloudbreak.TestUtil;
 import com.sequenceiq.cloudbreak.api.model.ClusterExposedServiceResponse;
-import com.sequenceiq.cloudbreak.api.model.ConfigStrategy;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.ConfigStrategy;
 import com.sequenceiq.cloudbreak.api.model.SecretResponse;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.database.base.DatabaseV4Base;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.database.requests.DatabaseV4Request;

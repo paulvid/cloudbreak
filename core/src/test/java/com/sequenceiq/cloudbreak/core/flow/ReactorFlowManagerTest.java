@@ -26,7 +26,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.sequenceiq.cloudbreak.TestUtil;
 import com.sequenceiq.cloudbreak.api.model.Status;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupAdjustmentJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.HostGroupAdjustmentV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupAdjustmentJson;
 import com.sequenceiq.cloudbreak.cloud.Acceptable;
 import com.sequenceiq.cloudbreak.cloud.reactor.ErrorHandlerAwareReactorEventFactory;
@@ -75,7 +75,7 @@ public class ReactorFlowManagerTest {
     @Test
     public void shouldReturnTheNextFailureTransition() {
         InstanceGroupAdjustmentJson instanceGroupAdjustment = new InstanceGroupAdjustmentJson();
-        HostGroupAdjustmentJson hostGroupAdjustment = new HostGroupAdjustmentJson();
+        HostGroupAdjustmentV4Request hostGroupAdjustment = new HostGroupAdjustmentV4Request();
         Map<String, Set<Long>> instanceIdsByHostgroup = new HashMap<>();
         instanceIdsByHostgroup.put("hostrgroup", Collections.singleton(1L));
 

@@ -1,15 +1,15 @@
 package com.sequenceiq.cloudbreak.converter.spi;
 
-import com.sequenceiq.cloudbreak.api.endpoint.v4.filesystems.requests.wasb.WasbCloudStorageParameters;
-import com.sequenceiq.cloudbreak.cloud.model.filesystem.CloudWasbView;
-import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConverter;
 import org.springframework.stereotype.Component;
 
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.cluster.storage.azure.WasbCloudStorageParametersV4;
+import com.sequenceiq.cloudbreak.cloud.model.filesystem.CloudWasbView;
+import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConverter;
+
 @Component
-public class WasbCloudStorageParametersToCloudWasbViewConverter
-        extends AbstractConversionServiceAwareConverter<WasbCloudStorageParameters, CloudWasbView> {
+public class WasbCloudStorageParametersToCloudWasbViewConverter extends AbstractConversionServiceAwareConverter<WasbCloudStorageParametersV4, CloudWasbView> {
     @Override
-    public CloudWasbView convert(WasbCloudStorageParameters source) {
+    public CloudWasbView convert(WasbCloudStorageParametersV4 source) {
         CloudWasbView cloudWasbView = new CloudWasbView();
         cloudWasbView.setAccountKey(source.getAccountKey());
         cloudWasbView.setAccountName(source.getAccountName());

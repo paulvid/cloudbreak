@@ -6,8 +6,8 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import com.sequenceiq.cloudbreak.api.model.StatusRequest;
-import com.sequenceiq.cloudbreak.api.model.UpdateClusterJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.StatusRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.UpdateClusterV4Request;
 import com.sequenceiq.cloudbreak.api.model.UpdateStackJson;
 import com.sequenceiq.it.IntegrationTestContext;
 import com.sequenceiq.it.cloudbreak.AbstractCloudbreakIntegrationTest;
@@ -47,7 +47,7 @@ public class StackAndClusterStartTest extends AbstractCloudbreakIntegrationTest 
             CloudbreakUtil.waitAndCheckStackStatus(getCloudbreakClient(), stackId, "AVAILABLE");
         }
 
-        UpdateClusterJson updateClusterJson = new UpdateClusterJson();
+        UpdateClusterV4Request updateClusterJson = new UpdateClusterV4Request();
         updateClusterJson.setStatus(StatusRequest.valueOf(STARTED));
         CloudbreakUtil.checkResponse("StartCluster", getCloudbreakClient().clusterEndpoint().put(Long.valueOf(stackIntId), updateClusterJson));
         CloudbreakUtil.waitAndCheckClusterStatus(getCloudbreakClient(), stackId, "AVAILABLE");

@@ -4,7 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.sequenceiq.cloudbreak.api.model.StatusRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.StatusRequest;
 import com.sequenceiq.cloudbreak.api.model.UpdateStackJson;
 import com.sequenceiq.it.IntegrationTestContext;
 import com.sequenceiq.it.cloudbreak.AbstractCloudbreakIntegrationTest;

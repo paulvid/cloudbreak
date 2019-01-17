@@ -4,7 +4,7 @@ import com.sequenceiq.cloudbreak.api.model.stack.cluster.gateway.GatewayJson;
 import com.sequenceiq.cloudbreak.api.model.v2.StackV2Request;
 import com.sequenceiq.cloudbreak.controller.exception.BadRequestException;
 import com.sequenceiq.cloudbreak.controller.validation.ValidationResult;
-import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayJsonValidator;
+import com.sequenceiq.cloudbreak.controller.validation.stack.cluster.gateway.GatewayV4RequestValidator;
 import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConverter;
 import com.sequenceiq.cloudbreak.converter.util.GatewayConvertUtil;
 import com.sequenceiq.cloudbreak.domain.stack.cluster.gateway.Gateway;
@@ -19,7 +19,7 @@ public class StackV2RequestToGatewayConverter extends AbstractConversionServiceA
     private GatewayConvertUtil convertUtil;
 
     @Inject
-    private GatewayJsonValidator gatewayJsonValidator;
+    private GatewayV4RequestValidator gatewayJsonValidator;
 
     @Override
     public Gateway convert(StackV2Request source) {

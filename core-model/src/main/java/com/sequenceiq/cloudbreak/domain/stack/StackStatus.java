@@ -43,6 +43,9 @@ public class StackStatus implements ProvisionEntity {
     public StackStatus() {
     }
 
+    public StackStatus(Stack stack, DetailedStackStatus detailedStackStatus) {
+        this(stack, detailedStackStatus.getStatus(), "", detailedStackStatus);
+    }
     public StackStatus(Stack stack, Status status, String statusReason, DetailedStackStatus detailedStackStatus) {
         this.stack = stack;
         this.status = status;

@@ -21,9 +21,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.sequenceiq.ambari.client.AmbariClient;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.cluster.ClusterV4Request;
 import com.sequenceiq.cloudbreak.api.model.ConfigsResponse;
 import com.sequenceiq.cloudbreak.api.model.ResourceStatus;
-import com.sequenceiq.cloudbreak.api.model.v2.ClusterV2Request;
 import com.sequenceiq.cloudbreak.blueprint.CentralBlueprintParameterQueryService;
 import com.sequenceiq.cloudbreak.cloud.model.StackInputs;
 import com.sequenceiq.cloudbreak.controller.exception.BadRequestException;
@@ -80,8 +80,8 @@ public class SharedServiceConfigProvider {
         return requestedCluster;
     }
 
-    public boolean isConfigured(@Nonnull ClusterV2Request clusterV2Request) {
-        return clusterV2Request.getSharedService() != null && !Strings.isNullOrEmpty(clusterV2Request.getSharedService().getSharedCluster());
+    public boolean isConfigured(@Nonnull ClusterV4Request clusterRequest) {
+        return clusterRequest.getSharedService() != null && !Strings.isNullOrEmpty(clusterRequest.getSharedService().getSharedClusterName());
     }
 
     public Stack prepareDatalakeConfigs(Stack publicStack) {

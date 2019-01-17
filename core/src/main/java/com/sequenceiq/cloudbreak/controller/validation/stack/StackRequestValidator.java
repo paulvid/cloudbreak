@@ -20,7 +20,7 @@ import com.sequenceiq.cloudbreak.api.endpoint.v4.database.base.DatabaseType;
 import com.sequenceiq.cloudbreak.api.model.EncryptionKeyConfigJson;
 import com.sequenceiq.cloudbreak.api.model.stack.StackRequest;
 import com.sequenceiq.cloudbreak.api.model.stack.cluster.ClusterRequest;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupBase;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.HostGroupV4Base;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupBase;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupRequest;
 import com.sequenceiq.cloudbreak.api.model.v2.template.EncryptionType;
@@ -93,7 +93,7 @@ public class StackRequestValidator implements Validator<StackRequest> {
         if (stackRequest.getClusterRequest() != null) {
             Set<String> hostGroupSet = stackRequest.getClusterRequest().getHostGroups()
                     .stream()
-                    .map(HostGroupBase::getName)
+                    .map(HostGroupV4Base::getName)
                     .collect(Collectors.toSet());
 
             if (!instanceGroupSet.containsAll(hostGroupSet)) {

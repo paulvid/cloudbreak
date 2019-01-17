@@ -26,7 +26,7 @@ import org.springframework.util.ReflectionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.database.base.DatabaseType;
 import com.sequenceiq.cloudbreak.api.model.AdjustmentType;
-import com.sequenceiq.cloudbreak.api.model.ConfigStrategy;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.ConfigStrategy;
 import com.sequenceiq.cloudbreak.api.model.DatabaseVendor;
 import com.sequenceiq.cloudbreak.api.model.DetailedStackStatus;
 import com.sequenceiq.cloudbreak.api.model.DirectoryType;

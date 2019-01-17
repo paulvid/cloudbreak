@@ -25,10 +25,11 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Sets;
-import com.sequenceiq.cloudbreak.api.model.AmbariRepoDetailsJson;
-import com.sequenceiq.cloudbreak.api.model.AmbariStackDetailsJson;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.cluster.ClusterV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.util.responses.StackDescriptorV4;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.util.responses.StackMatrixV4;
+import com.sequenceiq.cloudbreak.api.model.AmbariRepoDetailsJson;
+import com.sequenceiq.cloudbreak.api.model.AmbariStackDetailsJson;
 import com.sequenceiq.cloudbreak.api.model.stack.cluster.ClusterRequest;
 import com.sequenceiq.cloudbreak.blueprint.utils.BlueprintUtils;
 import com.sequenceiq.cloudbreak.cloud.VersionComparator;
@@ -131,11 +132,11 @@ public class ClusterCreationSetupService {
     @Inject
     private ClusterCreationEnvironmentValidator environmentValidator;
 
-    public void validate(ClusterRequest request, Stack stack, User user, Workspace workspace) {
+    public void validate(ClusterV4Request request, Stack stack, User user, Workspace workspace) {
         validate(request, null, stack, user, workspace);
     }
 
-    public void validate(ClusterRequest request, CloudCredential cloudCredential, Stack stack, User user, Workspace workspace) {
+    public void validate(ClusterV4Request request, CloudCredential cloudCredential, Stack stack, User user, Workspace workspace) {
         if ((stack.getDatalakeId() != null || stack.getDatalakeResourceId() != null) && StringUtils.isNotBlank(request.getKerberosConfigName())) {
             throw new BadRequestException("Invalid kerberos settings, attached cluster should inherit kerberos parameters");
         }
@@ -144,7 +145,7 @@ public class ClusterCreationSetupService {
         if (credential == null) {
             credential = credentialToCloudCredentialConverter.convert(stack.getCredential());
         }
-        fileSystemValidator.validateFileSystem(stack.cloudPlatform(), credential, request.getFileSystem(),
+        fileSystemValidator.validateFileSystem(stack.cloudPlatform(), credential, request.getCloudStorage(),
                 stack.getCreator().getUserId(), stack.getWorkspace().getId());
         mpackValidator.validateMpacks(request, workspace);
         rdsConfigValidator.validateRdsConfigs(request, user, workspace);
@@ -154,21 +155,21 @@ public class ClusterCreationSetupService {
         }
     }
 
-    public Cluster prepare(ClusterRequest request, Stack stack, User user, Workspace workspace) throws CloudbreakImageNotFoundException,
+    public Cluster prepare(ClusterV4Request request, Stack stack, User user, Workspace workspace) throws CloudbreakImageNotFoundException,
             IOException, TransactionExecutionException {
         return prepare(request, stack, null, user, workspace);
     }
 
-    public Cluster prepare(ClusterRequest request, Stack stack, Blueprint blueprint, User user, Workspace workspace) throws IOException,
+    public Cluster prepare(ClusterV4Request request, Stack stack, Blueprint blueprint, User user, Workspace workspace) throws IOException,
             CloudbreakImageNotFoundException, TransactionExecutionException {
         String stackName = stack.getName();
 
         long start = System.currentTimeMillis();
 
-        if (request.getFileSystem() != null) {
-            FileSystem fs = fileSystemConfigService.create(conversionService.convert(request.getFileSystem(), FileSystem.class), stack.getWorkspace(),
+        if (request.getCloudStorage() != null) {
+            FileSystem fs = fileSystemConfigService.create(conversionService.convert(request.getCloudStorage(), FileSystem.class), stack.getWorkspace(),
                     stack.getCreator());
-            request.getFileSystem().setName(fs.getName());
+            request.getCloudStorage().setName(fs.getName());
             LOGGER.debug("File system saving took {} ms for stack {}", System.currentTimeMillis() - start, stackName);
         }
 

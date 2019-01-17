@@ -61,7 +61,7 @@ import com.sequenceiq.cloudbreak.converter.v4.kerberos.KerberosConfigToKerberosV
 import com.sequenceiq.cloudbreak.converter.v4.database.RDSConfigToDatabaseV4ResponseConverter;
 import com.sequenceiq.cloudbreak.converter.v4.environment.EnvironmentToDetailedEnvironmentV4ResponseConverter;
 import com.sequenceiq.cloudbreak.converter.v4.environment.RegionConverter;
-import com.sequenceiq.cloudbreak.converter.stack.StackApiViewToStackViewResponseConverter;
+import com.sequenceiq.cloudbreak.converter.v4.stacks.view.StackApiViewToStackViewV4ResponseConverter;
 import com.sequenceiq.cloudbreak.converter.v4.ldaps.LdapConfigToLdapV4ResponseConverter;
 import com.sequenceiq.cloudbreak.converter.v4.proxies.ProxyConfigToProxyV4ResponseConverter;
 import com.sequenceiq.cloudbreak.domain.Credential;
@@ -180,7 +180,7 @@ public class EnvironmentServiceTest {
     private KerberosConfigToKerberosV4ResponseConverter kerberosConfigResponseConverter;
 
     @InjectMocks
-    private StackApiViewToStackViewResponseConverter stackApiViewToStackViewResponseConverter;
+    private StackApiViewToStackViewV4ResponseConverter stackApiViewToStackViewResponseConverter;
 
     @Before
     public void setup() throws TransactionExecutionException {

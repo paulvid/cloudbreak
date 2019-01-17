@@ -19,10 +19,12 @@ import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Strings;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.StackV4Request;
 import com.sequenceiq.cloudbreak.api.model.AdjustmentType;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.database.base.DatabaseType;
 import com.sequenceiq.cloudbreak.api.model.stack.StackRequest;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupType;
+import com.sequenceiq.cloudbreak.api.util.ConverterUtil;
 import com.sequenceiq.cloudbreak.cloud.PlatformParameters;
 import com.sequenceiq.cloudbreak.cloud.PlatformParametersConsts;
 import com.sequenceiq.cloudbreak.cloud.model.InstanceGroupParameterRequest;
@@ -86,8 +88,7 @@ public class StackDecorator {
     private TemplateValidator templateValidator;
 
     @Inject
-    @Qualifier("conversionService")
-    private ConversionService conversionService;
+    private ConverterUtil converterUtil;
 
     @Inject
     private CloudParameterService cloudParameterService;
@@ -107,7 +108,7 @@ public class StackDecorator {
     @Inject
     private EnvironmentViewService environmentViewService;
 
-    public Stack decorate(@Nonnull Stack subject, @Nonnull StackRequest request, User user, Workspace workspace) {
+    public Stack decorate(@Nonnull Stack subject, @Nonnull StackV4Request request, User user, Workspace workspace) {
         setEnvironment(subject, request, workspace);
 
         String stackName = request.getName();
@@ -210,33 +211,27 @@ public class StackDecorator {
         return hasConfiguredRds;
     }
 
-    private boolean hasConfiguredLdap(StackRequest request) {
+    private boolean hasConfiguredLdap(StackV4Request request) {
         boolean hasConfiguredLdap = false;
-        if (request.getClusterRequest().getLdapConfig() != null
-                || request.getClusterRequest().getLdapConfigName() != null
-                || request.getClusterRequest().getLdapConfigId() != null) {
+        if (request.getCluster().getLdapName() != null) {
             hasConfiguredLdap = true;
         }
         return hasConfiguredLdap;
     }
 
-    private void prepareCredential(Stack subject, StackRequest request, User user, Workspace workspace) {
+    private void prepareCredential(Stack subject, StackV4Request request, User user, Workspace workspace) {
         if (subject.getEnvironment() != null) {
             subject.setCredential(subject.getEnvironment().getCredential());
         } else if (subject.getCredential() == null) {
-            if (request.getCredentialId() != null) {
-                Credential credential = credentialService.get(request.getCredentialId(), workspace);
-                subject.setCredential(credential);
-            }
-            if (request.getCredentialName() != null) {
-                Credential credential = credentialService.getByNameForWorkspace(request.getCredentialName(), workspace);
+            if (request.getEnvironment().getCredentialName() != null) {
+                Credential credential = credentialService.getByNameForWorkspace(request.getEnvironment().getCredentialName(), workspace);
                 subject.setCredential(credential);
             }
         }
         subject.setParameters(getValidParameters(subject, request));
     }
 
-    private Map<String, String> getValidParameters(Stack stack, StackRequest stackRequest) {
+    private Map<String, String> getValidParameters(Stack stack, StackV4Request stackRequest) {
         Map<String, String> params = new HashMap<>();
         Map<String, String> userParams = stackRequest.getParameters();
         if (userParams != null) {
@@ -270,7 +265,7 @@ public class StackDecorator {
         }
     }
 
-    private void prepareInstanceGroups(Stack subject, StackRequest request, Credential credential, User user) {
+    private void prepareInstanceGroups(Stack subject, StackV4Request request, Credential credential, User user) {
         Map<String, InstanceGroupParameterResponse> instanceGroupParameterResponse = cloudParameterService
                 .getInstanceGroupParameters(credential, getInstanceGroupParameterRequests(subject));
         for (InstanceGroup instanceGroup : subject.getInstanceGroups()) {
@@ -301,7 +296,7 @@ public class StackDecorator {
     private Set<InstanceGroupParameterRequest> getInstanceGroupParameterRequests(Stack subject) {
         Set<InstanceGroupParameterRequest> instanceGroupParameterRequests = new HashSet<>();
         for (InstanceGroup instanceGroup : subject.getInstanceGroups()) {
-            InstanceGroupParameterRequest convert = conversionService.convert(instanceGroup, InstanceGroupParameterRequest.class);
+            InstanceGroupParameterRequest convert = converterUtil.convert(instanceGroup, InstanceGroupParameterRequest.class);
             convert.setStackName(subject.getName());
             instanceGroupParameterRequests.add(convert);
         }
@@ -320,7 +315,7 @@ public class StackDecorator {
         }
     }
 
-    private void prepareDomainIfDefined(Stack subject, StackRequest request, User user, Workspace workspace) {
+    private void prepareDomainIfDefined(Stack subject, StackV4Request request, User user, Workspace workspace) {
         if (subject.getNetwork() != null) {
             Network network = subject.getNetwork();
             if (network.getId() == null) {
@@ -386,7 +381,7 @@ public class StackDecorator {
         }
     }
 
-    private String getCloudPlatform(Stack stack, StackRequest request, String cloudPlatform) {
+    private String getCloudPlatform(Stack stack, StackV4Request request, String cloudPlatform) {
         if (!Strings.isNullOrEmpty(cloudPlatform)) {
             return cloudPlatform;
         } else if (stack.getCredential() != null && stack.getCredential().getId() != null) {
@@ -394,7 +389,7 @@ public class StackDecorator {
         } else if (Strings.isNullOrEmpty(stack.cloudPlatform())) {
             return stack.cloudPlatform();
         } else {
-            return request.getCloudPlatform();
+            return request.getCloudPlatform().name();
         }
     }
 }

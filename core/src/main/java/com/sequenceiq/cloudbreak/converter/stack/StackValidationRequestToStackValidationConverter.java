@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 import com.sequenceiq.cloudbreak.api.model.NetworkRequest;
 import com.sequenceiq.cloudbreak.api.model.SpecialParameters;
 import com.sequenceiq.cloudbreak.api.model.stack.StackValidationRequest;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.HostGroupV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupRequest;
 import com.sequenceiq.cloudbreak.cloud.PlatformParametersConsts;
 import com.sequenceiq.cloudbreak.cloud.model.Platform;
@@ -166,9 +166,9 @@ public class StackValidationRequestToStackValidationConverter extends AbstractCo
         }
     }
 
-    private Set<HostGroup> convertHostGroupsFromJson(Collection<InstanceGroup> instanceGroups, Iterable<HostGroupRequest> hostGroupsJsons) {
+    private Set<HostGroup> convertHostGroupsFromJson(Collection<InstanceGroup> instanceGroups, Iterable<HostGroupV4Request> hostGroupsJsons) {
         Set<HostGroup> hostGroups = new HashSet<>();
-        for (HostGroupRequest json : hostGroupsJsons) {
+        for (HostGroupV4Request json : hostGroupsJsons) {
             HostGroup hostGroup = new HostGroup();
             hostGroup.setName(json.getName());
             Constraint constraint = conversionService.convert(json.getConstraint(), Constraint.class);

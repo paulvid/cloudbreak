@@ -18,7 +18,7 @@ import com.sequenceiq.cloudbreak.api.model.OrchestratorRequest;
 import com.sequenceiq.cloudbreak.api.model.SharedServiceRequest;
 import com.sequenceiq.cloudbreak.api.model.stack.StackRequest;
 import com.sequenceiq.cloudbreak.api.model.stack.cluster.ClusterRequest;
-import com.sequenceiq.cloudbreak.api.model.stack.cluster.host.HostGroupRequest;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.request.HostGroupV4Request;
 import com.sequenceiq.cloudbreak.api.model.stack.instance.InstanceGroupRequest;
 import com.sequenceiq.cloudbreak.api.model.v2.ImageSettings;
 import com.sequenceiq.cloudbreak.api.model.v2.InstanceGroupV2Request;
@@ -152,7 +152,7 @@ public class StackV2RequestToStackRequestConverter extends AbstractConversionSer
         if (source.getCluster() != null) {
             stackRequest.setClusterRequest(conversionService.convert(source.getCluster(), ClusterRequest.class));
             for (InstanceGroupV2Request instanceGroupV2Request : source.getInstanceGroups()) {
-                HostGroupRequest convert = conversionService.convert(instanceGroupV2Request, HostGroupRequest.class);
+                HostGroupV4Request convert = conversionService.convert(instanceGroupV2Request, HostGroupV4Request.class);
                 stackRequest.getClusterRequest().getHostGroups().add(convert);
             }
             stackRequest.getClusterRequest().setName(source.getGeneral().getName());
