@@ -64,15 +64,38 @@ class ClusterUpscaleFlowService {
         flowMessageService.fireEventAndLog(stackId, Msg.CLUSTER_SINGLE_MASTER_REPAIR_FINISHED, UPDATE_IN_PROGRESS.name());
     }
 
-    public void upscalingClusterManager(long stackId) {
+    void upscalingClusterManager(long stackId) {
         clusterService.updateClusterStatusByStackId(stackId, UPDATE_IN_PROGRESS, "Upscaling the cluster.");
         flowMessageService.fireEventAndLog(stackId, Msg.AMBARI_CLUSTER_SCALING_UP, UPDATE_IN_PROGRESS.name());
     }
 
-    // TODO-MASTER-REPAIR delete this method
-    void upscalingAmbariWithMessage(long stackId, String message) {
-        clusterService.updateClusterStatusByStackId(stackId, UPDATE_IN_PROGRESS, "Upscaling the cluster.");
-        flowMessageService.fireEventAndLogDeleteMe(stackId, message, UPDATE_IN_PROGRESS.name());
+    void stopAmbariServer(long stackId) {
+        sendMessage(stackId, Msg.AMBARI_STOP_AMBARI_SERVER_STARTED, "Stopping ambari server.");
+    }
+
+    void ambariStopComponents(long stackId) {
+        sendMessage(stackId, Msg.AMBARI_STOP_COMPONENTS_STARTED, "Stopping components.");
+    }
+
+    void startAmbariServer(long stackId) {
+        sendMessage(stackId, Msg.AMBARI_START_AMBARI_SERVER_STARTED, "Starting ambari server.");
+    }
+
+    void ambariRegenerateKeytabs(long stackId) {
+        sendMessage(stackId, Msg.AMBARI_REGENERATE_KEYTABS_STARTED, "Regenerating ambari keytabs.");
+    }
+
+    void ambariReinstallComponents(long stackId) {
+        sendMessage(stackId, Msg.AMBARI_REINSTALL_COMPONENTS_STARTED, "Reinstalling ambari components.");
+    }
+
+    void ambariRestartAll(long stackId) {
+        sendMessage(stackId, Msg.AMBARI_RESTART_ALL_COMPONENTS_STARTED, "Restarting all components on all nodes.");
+    }
+
+    private void sendMessage(long stackId, Msg ambariMessage, String statusReason) {
+        clusterService.updateClusterStatusByStackId(stackId, UPDATE_IN_PROGRESS, statusReason);
+        flowMessageService.fireEventAndLog(stackId, ambariMessage, UPDATE_IN_PROGRESS.name());
     }
 
     void clusterUpscaleFinished(StackView stackView, String hostgroupName) {

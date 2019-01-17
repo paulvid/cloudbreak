@@ -101,7 +101,6 @@ public class ClusterUpscaleActions {
         return new AbstractClusterUpscaleAction<UploadUpscaleRecipesResult>(UploadUpscaleRecipesResult.class) {
             @Override
             protected void doExecute(ClusterUpscaleContext context, UploadUpscaleRecipesResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "CHECK_HOST_METADATA_STATE");
                 sendEvent(context);
             }
 
@@ -118,7 +117,6 @@ public class ClusterUpscaleActions {
         return new AbstractClusterUpscaleAction<UpscaleCheckHostMetadataResult>(UpscaleCheckHostMetadataResult.class) {
             @Override
             protected void doExecute(ClusterUpscaleContext context, UpscaleCheckHostMetadataResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "UPSCALING_AMBARI_STATE");
                 clusterUpscaleFlowService.upscalingClusterManager(context.getStackId());
                 sendEvent(context);
             }
@@ -137,7 +135,6 @@ public class ClusterUpscaleActions {
         return new AbstractClusterUpscaleAction<UpscaleClusterManagerResult>(UpscaleClusterManagerResult.class) {
             @Override
             protected void doExecute(ClusterUpscaleContext context, UpscaleClusterManagerResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "UPSCALING_AMBARI_FINISHED_STATE");
                 if (context.isSinglePrimaryGateway()) {
                     clusterUpscaleFlowService.ambariRepairSingleMasterStarted(context.getStackId());
                     AmbariRepairSingleMasterStartResult result = new AmbariRepairSingleMasterStartResult(context.getStackId(), context.getHostGroupName());
@@ -156,7 +153,6 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariRepairSingleMasterStartResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_GATHER_INSTALLED_COMPONENTS_STATE");
                 sendEvent(context);
             }
 
@@ -173,7 +169,6 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariGatherInstalledComponentsResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_STOP_COMPONENTS_STATE");
                 Map<String, String> components = payload.getFoundInstalledComponents();
                 variables.put(INSTALLED_COMPONENTS, components);
                 AmbariStopComponentsRequest request =
@@ -189,7 +184,7 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariStopComponentsResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_STOP_SERVER_AGENT_STATE");
+                clusterUpscaleFlowService.stopAmbariServer(context.getStackId());
                 sendEvent(context);
             }
 
@@ -207,7 +202,7 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariStopServerAndAgentResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_START_SERVER_AGENT_STATE");
+                clusterUpscaleFlowService.startAmbariServer(context.getStackId());
                 sendEvent(context);
             }
 
@@ -226,8 +221,8 @@ public class ClusterUpscaleActions {
             protected void doExecute(ClusterUpscaleContext context, AmbariStartServerAndAgentResult payload, Map<Object, Object> variables) {
                 AmbariRegenerateKerberosKeytabsRequest request =
                         new AmbariRegenerateKerberosKeytabsRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName());
-                if (getKerberosSecured(variables)) {
-                    clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_REGENERATE_KERBEROS_KEYTABS_STATE");
+                if(getKerberosSecured(variables)) {
+                    clusterUpscaleFlowService.ambariRegenerateKeytabs(context.getStackId());
                     sendEvent(context.getFlowId(), request.selector(), request);
                 } else {
                     AmbariRegenerateKerberosKeytabsResult result = new AmbariRegenerateKerberosKeytabsResult(request);
@@ -243,7 +238,7 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariRegenerateKerberosKeytabsResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_ENSURE_COMPONENTS_ARE_STOPPED_STATE");
+                clusterUpscaleFlowService.ambariStopComponents(context.getStackId());
                 Map<String, String> components = getInstalledComponents(variables);
                 AmbariEnsureComponentsAreStoppedRequest request =
                         new AmbariEnsureComponentsAreStoppedRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName(),
@@ -259,7 +254,6 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariEnsureComponentsAreStoppedResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_INIT_COMPONENTS_STATE");
                 Map<String, String> components = getInstalledComponents(variables);
                 AmbariInitComponentsRequest request =
                         new AmbariInitComponentsRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName(), components);
@@ -274,7 +268,7 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariInitComponentsResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_INSTALL_COMPONENTS_STATE");
+                clusterUpscaleFlowService.ambariReinstallComponents(context.getStackId());
                 Map<String, String> components = getInstalledComponents(variables);
                 AmbariInstallComponentsRequest request =
                         new AmbariInstallComponentsRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName(), components);
@@ -289,7 +283,7 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariInstallComponentsResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_START_COMPONENTS_STATE");
+                clusterUpscaleFlowService.ambariRestartAll(context.getStackId());
                 Map<String, String> components = getInstalledComponents(variables);
                 AmbariStartComponentsRequest request =
                         new AmbariStartComponentsRequest(context.getStackId(), context.getHostGroupName(), context.getPrimaryGatewayHostName(), components);
@@ -304,7 +298,6 @@ public class ClusterUpscaleActions {
 
             @Override
             protected void doExecute(ClusterUpscaleContext context, AmbariStartComponentsResult payload, Map<Object, Object> variables) {
-                clusterUpscaleFlowService.upscalingAmbariWithMessage(context.getStackId(), "AMBARI_REPAIR_SINGLE_MASTER_FINISHED_STATE");
                 clusterUpscaleFlowService.ambariRepairSingleMasterFinished(context.getStackId());
                 sendEvent(context);
             }

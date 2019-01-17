@@ -30,11 +30,6 @@ public class FlowMessageService {
         cloudbreakEventService.fireCloudbreakEvent(stackId, eventType, message(msgCode, args));
     }
 
-    // TODO-MASTER-REPAIR delete this method
-    public void fireEventAndLogDeleteMe(Long stackId, String message, String eventType) {
-        cloudbreakEventService.fireCloudbreakEvent(stackId, eventType, message);
-    }
-
     public void fireInstanceGroupEventAndLog(Long stackId, Msg msgCode, String eventType, String instanceGroup, Object... args) {
         cloudbreakEventService.fireCloudbreakInstanceGroupEvent(stackId, eventType, message(msgCode, args), instanceGroup);
     }
