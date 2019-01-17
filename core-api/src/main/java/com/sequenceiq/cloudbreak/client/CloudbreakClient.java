@@ -176,7 +176,7 @@ public class CloudbreakClient {
         return getEndpoint(KubernetesV4Endpoint.class);
     }
 
-    public WorkspaceV4Endpoint workspaceV3Endpoint() {
+    public WorkspaceV4Endpoint workspaceV4Endpoint() {
         return getEndpoint(WorkspaceV4Endpoint.class);
     }
 
