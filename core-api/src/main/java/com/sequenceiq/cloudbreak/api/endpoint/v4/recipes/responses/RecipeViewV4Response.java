@@ -1,15 +1,16 @@
 package com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses;
 
+import javax.validation.constraints.NotNull;
+
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.requests.RecipeV4Type;
 import com.sequenceiq.cloudbreak.api.model.CompactViewResponse;
 import com.sequenceiq.cloudbreak.doc.ModelDescriptions;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
-
 @ApiModel
-public class RecipeV4ViewResponse extends CompactViewResponse {
+public class RecipeViewV4Response extends CompactViewResponse {
     @NotNull
     @ApiModelProperty(ModelDescriptions.RecipeModelDescription.TYPE)
     private RecipeV4Type type;

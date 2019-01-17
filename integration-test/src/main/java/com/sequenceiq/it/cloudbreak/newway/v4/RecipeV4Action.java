@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeV4Response;
-import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeV4ViewResponse;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeViewV4Response;
 import com.sequenceiq.it.IntegrationTestContext;
 import com.sequenceiq.it.cloudbreak.newway.CloudbreakClient;
 import com.sequenceiq.it.cloudbreak.newway.CloudbreakTest;
@@ -42,7 +42,7 @@ public class RecipeV4Action {
         CloudbreakClient client;
         client = integrationTestContext.getContextParam(CloudbreakClient.CLOUDBREAK_CLIENT, CloudbreakClient.class);
         Long workspaceId = integrationTestContext.getContextParam(CloudbreakTest.WORKSPACE_ID, Long.class);
-        Set<RecipeV4ViewResponse> recipes = client.getCloudbreakClient().recipeV4Endpoint().list(workspaceId).getResponses();
+        Set<RecipeViewV4Response> recipes = client.getCloudbreakClient().recipeV4Endpoint().list(workspaceId).getResponses();
         Set<RecipeV4Response> detailedRecipes = new HashSet<>();
         recipes.stream().forEach(
                 recipe -> detailedRecipes.add(client.getCloudbreakClient().recipeV4Endpoint().get(workspaceId, recipe.getName())));

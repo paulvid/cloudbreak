@@ -14,7 +14,7 @@ import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.RecipeV4Endpoint;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.requests.RecipeV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeV4Response;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeV4Responses;
-import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeV4ViewResponse;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeViewV4Response;
 import com.sequenceiq.cloudbreak.common.type.ResourceEvent;
 import com.sequenceiq.cloudbreak.controller.common.NotificationController;
 import com.sequenceiq.cloudbreak.domain.Recipe;
@@ -41,7 +41,7 @@ public class RecipesV4Controller extends NotificationController implements Recip
     @Override
     public RecipeV4Responses list(Long workspaceId) {
         Set<RecipeView> allViewByWorkspaceId = recipeService.findAllViewByWorkspaceId(workspaceId);
-        return new RecipeV4Responses(converterUtil.convertAllAsSet(allViewByWorkspaceId, RecipeV4ViewResponse.class));
+        return new RecipeV4Responses(converterUtil.convertAllAsSet(allViewByWorkspaceId, RecipeViewV4Response.class));
     }
 
     @Override

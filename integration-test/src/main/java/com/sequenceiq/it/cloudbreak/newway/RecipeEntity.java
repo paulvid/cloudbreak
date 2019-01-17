@@ -10,12 +10,12 @@ import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.RecipeV4Endpoint;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.requests.RecipeV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.requests.RecipeV4Type;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeV4Response;
-import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeV4ViewResponse;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.recipes.responses.RecipeViewV4Response;
 import com.sequenceiq.it.cloudbreak.newway.context.Purgable;
 import com.sequenceiq.it.cloudbreak.newway.context.TestContext;
 
 @Prototype
-public class RecipeEntity extends AbstractCloudbreakEntity<RecipeV4Request, RecipeV4Response, RecipeEntity> implements Purgable<RecipeV4ViewResponse> {
+public class RecipeEntity extends AbstractCloudbreakEntity<RecipeV4Request, RecipeV4Response, RecipeEntity> implements Purgable<RecipeViewV4Response> {
     public static final String RECIPE = "RECIPE";
 
     public RecipeEntity(String newId) {
@@ -69,7 +69,7 @@ public class RecipeEntity extends AbstractCloudbreakEntity<RecipeV4Request, Reci
     }
 
     @Override
-    public List<RecipeV4ViewResponse> getAll(CloudbreakClient client) {
+    public List<RecipeViewV4Response> getAll(CloudbreakClient client) {
         RecipeV4Endpoint recipeV4Endpoint = client.getCloudbreakClient().recipeV4Endpoint();
         return recipeV4Endpoint.list(client.getWorkspaceId()).getResponses().stream()
                 .filter(s -> s.getName() != null)
@@ -77,12 +77,12 @@ public class RecipeEntity extends AbstractCloudbreakEntity<RecipeV4Request, Reci
     }
 
     @Override
-    public boolean deletable(RecipeV4ViewResponse entity) {
+    public boolean deletable(RecipeViewV4Response entity) {
         return entity.getName().startsWith("mock-");
     }
 
     @Override
-    public void delete(RecipeV4ViewResponse entity, CloudbreakClient client) {
+    public void delete(RecipeViewV4Response entity, CloudbreakClient client) {
         try {
             client.getCloudbreakClient().recipeV4Endpoint().delete(client.getWorkspaceId(), entity.getName());
         } catch (Exception e) {
